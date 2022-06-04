@@ -32,7 +32,5 @@ return require('packer').startup(function(use)
   use 'windwp/nvim-autopairs'
   
   -- View
-  use {'iamcco/markdown-preview.nvim', run = [[sh -c 'cd app && yarn install']]}
   use 'airblade/vim-gitgutter'
-  use 'glepnir/dashboard-nvim'
 end)

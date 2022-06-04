@@ -1,3 +1,6 @@
+-- Neovim will generate gb's of logs for some reason when logging is set to `WARN`.
+vim.lsp.set_log_level(vim.lsp.log_levels.ERROR)
+
 local server = require('lspconfig')
 local on_attach = function(client, bufnr)
   local function buf_set_keymap(...) vim.api.nvim_buf_set_keymap(bufnr, ...) end
@@ -173,7 +176,24 @@ vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
 
 -- nvim-treesitter
 require('nvim-treesitter.configs').setup {
-  ensure_installed = "maintained",
+  ensure_installed = {
+      "glsl",
+      "wgsl",
+      "go",
+      "html",
+      "css",
+      "javascript",
+      "python",
+      "toml",
+      "json",
+      "lua",
+      "bash",
+      "comment",
+      "c",
+      "cpp",
+      "lua",
+      "rust"
+  },
   highlight = {
     enable = true
   },

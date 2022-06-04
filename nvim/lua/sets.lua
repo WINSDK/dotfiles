@@ -30,6 +30,8 @@ set.hlsearch = true
 set.scrolloff = 2
 set.pumheight = 22
 
+set.termguicolors = true
+
 set.tabstop = 4
 set.shiftwidth = 4
 set.softtabstop = 4
@@ -50,11 +52,10 @@ vim.g.gruvbox_material_diagnostic_virtual_text = "colored"
 set.background = "dark"
 vim.cmd("colorscheme gruvbox-material")
 
-vim.g.netrw_browse_split = 2
+vim.g.netrw_browse_split = 0
 vim.g.netrw_banner = 0
 vim.g.netrw_winsize = 25
 
-vim.g.dashboard_default_executive = "fzf"
 vim.g.completion_matching_strategy_list = { 'exact', 'substring', 'fuzzy' }
 vim.g.mapleader = " "
 
@@ -88,17 +89,17 @@ function colorcolumn()
   vim.opt.spell = filetype == "markdown"
 end
 
-vim.api.nvim_command([[
-  if exists('termguicolors')
-    set termguicolors
-  endif
-]])
+vim.api.nvim_create_autocmd(
+  "Filetype",
+  { command = "lua colorcolumn()" }
+)
 
-vim.api.nvim_command("autocmd Filetype * lua colorcolumn()")
+vim.api.nvim_create_autocmd(
+  "BufWinEnter",
+  { command = [[call system("kitty @ --to=$KITTY_LISTEN_ON set-tab-title " . expand('%:t'))]] }
+)
 
--- TODO: add inlay hints
-vim.api.nvim_command([[
-  autocmd BufWinEnter * call system("kitty @ --to=$KITTY_LISTEN_ON set-tab-title " . expand('%:t'))
-  autocmd VimLeave * call system("kitty @ --to=$KITTY_LISTEN_ON set-tab-title fish")
-]])
-
+vim.api.nvim_create_autocmd(
+  "VimLeave",
+  { command = [[call system("kitty @ --to=$KITTY_LISTEN_ON set-tab-title fish")]] }
+)
