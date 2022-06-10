@@ -17,13 +17,16 @@ switch (uname)
         abbr -a objdump "objdump -x86-asm-syntax=intel -C"
 end
 
+fish_add_path -P ~/.local/bin
 fish_add_path -P ~/.cargo/bin
 fish_add_path -P ~/Projects/utils
 fish_add_path -P ~/Projects/utils/git-size/target/release
 
+export GPG_TTY=$(tty)
 set EDITOR nvim
 set PYTHON_HOST_PROG "/usr/bin/python2"
 set PYTHON3_HOST_PROG "/usr/bin/python3"
+set LLVM_HOME "/usr/lib/llvm/14"
 
 # colored man output
 setenv LESS_TERMCAP_mb \e'[01;31m'       # begin blinking
@@ -36,7 +39,7 @@ setenv LESS_TERMCAP_us \e'[04;38;5;146m' # begin underline
 
 if status --is-login
   if test -z "$DISPLAY" -a $XDG_VTNR -eq 1
-    exec startx > /dev/null 2>&1
+    exec startx > /var/log/i3.log 2>&1
   end
 end
 

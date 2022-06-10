@@ -19,9 +19,8 @@ return require('packer').startup(function(use)
     requires = {
       "hrsh7th/vim-vsnip",
       "hrsh7th/cmp-nvim-lsp",
-	    "hrsh7th/cmp-nvim-lua",
-	    "hrsh7th/cmp-path",
-      "f3fora/cmp-spell"
+	  "hrsh7th/cmp-nvim-lua",
+	  "hrsh7th/cmp-path",
     }
   }
   

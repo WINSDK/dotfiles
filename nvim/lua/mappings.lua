@@ -2,9 +2,20 @@ local function nnoremap(k, c) vim.api.nvim_set_keymap('n', k, c, { noremap = tru
 local function inoremap(k, c) vim.api.nvim_set_keymap('i', k, c, { noremap = true, silent = true }) end
 local function map(k, c) vim.api.nvim_set_keymap('', k, c, { noremap = true, silent = true }) end
 
--- LSP shorter mappings
-vim.cmd([[command! Format lua vim.lsp.buf.formatting()]])
-vim.cmd([[command! Rename lua vim.lsp.buf.rename()]])
+vim.api.nvim_create_user_command(
+    'Rename', 
+    function (...) vim.lsp.buf.rename() end,
+    {}
+)
+
+vim.api.nvim_create_user_command(
+    'Format', 
+    function(...) vim.lsp.buf.formatting() end,
+    {}
+)
+
+-- Ignore :W command
+vim.api.nvim_create_user_command('W', 'w', { nargs = '*' })
 
 -- Disable arrow keys
 map("<F1>", "<Nop>")
