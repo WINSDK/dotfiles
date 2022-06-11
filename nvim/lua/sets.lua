@@ -85,8 +85,6 @@ function colorcolumn()
   if choices[filetype] then
     set.colorcolumn = tostring(choices[filetype])
   end
-
-  vim.opt.spell = filetype == "markdown"
 end
 
 vim.api.nvim_create_autocmd(
