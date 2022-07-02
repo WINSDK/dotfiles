@@ -8,6 +8,7 @@ local PLATFORM = (function()
 	  return "macos"
 	end
 end)()
+
 local CMD_DELIM = (function()
 	if PLATFORM == "windows" then
 		return "\\"
@@ -72,7 +73,6 @@ end
 
 local comms = {}
 
--- FIXME: Required cuz of trying to call null values from vim
 function comms.default()
 	return {
 		debug = function() end,
@@ -82,8 +82,8 @@ function comms.default()
 	}
 end
 
-function comms.rust(path)
-	local cargo_exists = cargo_run_target_exists(path)
+function comms.rust()
+	local cargo_exists = cargo_run_target_exists(vim.fn.getcwd())
 	local file_path = vim.api.nvim_buf_get_name(0)
 	local self = comms.default()
 
@@ -96,7 +96,7 @@ function comms.rust(path)
 
 		local rustc = "rustc " .. args ..  ' "' .. file_path .. '"' .. "&&" .. abs_path_to_exec(file_path)
 		if file_path:sub(-3) == ".rs" then
-      open_term(rustc, true)
+            open_term(rustc, true)
 		end
 	end
 
@@ -110,7 +110,7 @@ function comms.rust(path)
 
 	function self.debug()
 		if cargo_exists then
-      open_term("cargo run", true)
+            open_term("cargo run", true)
 		else
 			rust_call()
 		end
@@ -118,7 +118,7 @@ function comms.rust(path)
 
 	function self.clean()
 		if cargo_exists then
-      open_term("cargo clean")
+            open_term("cargo clean")
 		else
 			if PLATFORM == "windows" then
 				exe, pdb = file_path:sub(0, -4) .. ".exe", file_path:sub(0, -4) .. ".pdb"
@@ -136,41 +136,57 @@ function comms.rust(path)
 
 	function self.test()
 		if cargo_exists then
-      open_term("cargo test")
+            open_term("cargo test")
 		end
 	end
 
 	return self
 end
 
-function comms.python(path)
+function comms.python()
  	local file_path = vim.api.nvim_buf_get_name(0)
  	local self = comms.default()
 
-  local python_cmd = ""
-  if executable("py") then
-    python_cmd = "py"
-  else
-    python_cmd = "python3"
-  end
+    local python_cmd = ""
+    if executable("py") then
+        python_cmd = "py"
+    else
+        python_cmd = "python3"
+    end
 
 	function self.debug() 
-    open_term(python_cmd .. ' "' .. file_path .. '"', true)
+        open_term(python_cmd .. ' "' .. file_path .. '"', true)
 	end
 
 	return self
 end
 
-function comms.c(path)
-	local self = comms.default()
+function comms.haskell()
+ 	local file_path = vim.api.nvim_buf_get_name(0)
+    local self = comms.default()
 
-  function self.debug()
-    -- TODO: add makefile check etc
-  end
+    function self.debug()
+        open_term("ghci " .. file_path, true)
+    end
 
-  return self
+    return self
+end
+
+function comms.markdown()
+ 	local file_path = vim.api.nvim_buf_get_name(0)
+    local self = comms.default()
+
+    function self.debug()
+        vim.cmd("!~/Notes/render.sh " .. file_path, false)
+    end
+
+    return self
 end
 
 return function(filetype)
-	return comms[filetype](vim.fn.getcwd())
+    if comms[filetype] ~= nil then
+        return comms[filetype]()
+    end
+
+    return comms.default()
 end

@@ -24,6 +24,7 @@ fish_add_path -P ~/Projects/utils/git-size/target/release
 
 export GPG_TTY=$(tty)
 set EDITOR nvim
+set TERM screen-256color
 set PYTHON_HOST_PROG "/usr/bin/python2"
 set PYTHON3_HOST_PROG "/usr/bin/python3"
 set LLVM_HOME "/usr/lib/llvm/14"

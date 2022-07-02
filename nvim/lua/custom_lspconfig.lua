@@ -8,7 +8,7 @@ local on_attach = function(client, bufnr)
   local opts = { noremap = true, silent = true }
 
   -- LSP Code Navigation
-  buf_set_keymap("n", "~",  "<Cmd> lua vim.lsp.diagnostic.show_line_diagnostics()<CR>", opts)
+  buf_set_keymap("n", "~",  "<Cmd> lua vim.diagnostic.open_float()<CR>", opts)
   buf_set_keymap("n", "gd", "<Cmd> lua vim.lsp.buf.definition()<CR>", opts)
   buf_set_keymap("n", "gi", "<Cmd> lua vim.lsp.buf.implementation()<CR>", opts)
   buf_set_keymap("n", "gt", "<Cmd> lua vim.lsp.buf.type_definition()<CR>", opts)
@@ -57,46 +57,43 @@ lspkind.init {
   },
 }
 
-local check_back_space = function()
-  local col = vim.fn.col '.' - 1
-  return col == 0 or vim.fn.getline('.'):sub(col, col):match '%s' ~= nil
+local has_words_before = function()
+  local line, col = unpack(vim.api.nvim_win_get_cursor(0))
+  return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
 end
 
-local t = function(str)
-    return vim.api.nvim_replace_termcodes(str, true, true, true)
+local feedkey = function(key, mode)
+  vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes(key, true, true, true), mode, true)
 end
 
 local cmp = require('cmp')
 cmp.setup {
-  mapping = {
-    ["<Tab>"] = cmp.mapping(function(fallback)
-      if vim.fn.pumvisible() == 1 then
-        vim.fn.feedkeys(vim.api.nvim_replace_termcodes('<C-n>', true, true, true), 'n')
-      elseif check_back_space() then
-        vim.fn.feedkeys(vim.api.nvim_replace_termcodes('<Tab>', true, true, true), 'n')
-      elseif vim.fn['vsnip#available']() == 1 then
-        vim.fn.feedkeys(vim.api.nvim_replace_termcodes('<Plug>(vsnip-expand-or-jump)', true, true, true), '')
-      else
-        fallback()
-      end
-    end, {"i", "s"}),
-    ["<S-Tab>"] = cmp.mapping(function(fallback)
-      if vim.fn.pumvisible() == 1 then
-        vim.fn.feedkeys(t("<C-p>"), "n")
-      else
-        fallback()
-      end
-    end, {"i", "s"}),
-    ['<CR>'] = cmp.mapping.confirm({
-      behavior = cmp.ConfirmBehavior.Replace,
-      select = true
-    })
-  },
   formatting = {
     format = function(_, vim_item)
       vim_item.kind = lspkind.presets.default[vim_item.kind]
       return vim_item
     end
+  },
+  mapping = {
+      ['<CR>'] = cmp.mapping.confirm({ select = true }),
+      ["<Tab>"] = cmp.mapping(function(fallback)
+        if cmp.visible() then
+          cmp.select_next_item()
+        elseif vim.fn["vsnip#available"](1) == 1 then
+          feedkey("<Plug>(vsnip-expand-or-jump)", "")
+        elseif has_words_before() then
+          cmp.complete()
+        else
+          fallback()
+        end
+      end, { "i", "s" }),
+      ["<S-Tab>"] = cmp.mapping(function()
+        if cmp.visible() then
+          cmp.select_prev_item()
+        elseif vim.fn["vsnip#jumpable"](-1) == 1 then
+          feedkey("<Plug>(vsnip-jump-prev)", "")
+        end
+      end, { "i", "s" }),
   },
   snippet = {
     expand = function(args)
@@ -109,7 +106,7 @@ cmp.setup {
   sources = {
     { name = 'nvim_lsp' },
     { name = 'nvim_lua' }, 
-    { name = 'path' }
+    { name = 'path' },
   }
 }
 

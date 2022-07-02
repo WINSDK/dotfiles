@@ -41,4 +41,3 @@ nnoremap("<F8>", [[<Cmd>lua require("run_helper")(vim.bo.filetype).clean()<CR>  
 -- Best keymaps in vim
 nnoremap("<Tab>", "<Cmd>Files<CR>")
 inoremap("jj", "<Esc>")
-nnoremap(",", [[<Cmd>RustHoverActions<CR>]])
