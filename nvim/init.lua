@@ -1,5 +1,6 @@
 require('plugins')
 require('sets')
+require('fzf')
 require('lsp')
 require('treesitter')
 require('mappings')

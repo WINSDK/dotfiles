@@ -1,5 +1,4 @@
 local set = vim.opt
-set.rtp:append("~/.fzf")
 
 set.syntax = "enable"
 set.mouse = 'a'
@@ -59,45 +58,25 @@ vim.g.netrw_winsize = 25
 vim.g.completion_matching_strategy_list = { 'exact', 'substring', 'fuzzy' }
 vim.g.mapleader = " "
 
-vim.cmd("let fzf_layout = { 'down' : '~30%' }")
-
-if vim.fn.executable('rg') then
-  vim.g.rg_derive_root = true
-  vim.cmd("let $FZF_DEFAULT_COMMAND = 'rg --files'")
-  vim.cmd("let $FZF_DEFAULT_OPTS = '--reverse'")
-end
-
 if not vim.fn.has("gui_running") then
   vim.g.t_Co = 256
 end
 
-function colorcolumn()
-  local filetype = vim.bo.filetype
-  local choices = {
-    c         = 80,
-    cpp       = 80,
-    python    = 80,
-    gitcommit = 80,
-    markdown  = 80,
-    rust     = 100,
-  }
+vim.api.nvim_create_autocmd('Filetype', {
+  pattern = '*',
+  callback = function()
+      local filetype = vim.bo.filetype
+      local linewidths = {
+        c         = "80",
+        cpp       = "80",
+        python    = "80",
+        gitcommit = "80",
+        markdown  = "80",
+        rust      = "100",
+      }
 
-  if choices[filetype] then
-    set.colorcolumn = tostring(choices[filetype])
+      if linewidths[filetype] then
+        set.colorcolumn = linewidths[filetype]
+      end
   end
-end
-
-vim.api.nvim_create_autocmd(
-  "Filetype",
-  { command = "lua colorcolumn()" }
-)
-
-vim.api.nvim_create_autocmd(
-  "BufWinEnter",
-  { command = [[call system("kitty @ --to=$KITTY_LISTEN_ON set-tab-title " . expand('%:t'))]] }
-)
-
-vim.api.nvim_create_autocmd(
-  "VimLeave",
-  { command = [[call system("kitty @ --to=$KITTY_LISTEN_ON set-tab-title fish")]] }
-)
+})

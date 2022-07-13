@@ -162,7 +162,7 @@ function comms.python()
 end
 
 function comms.haskell()
- 	local file_path = vim.api.nvim_buf_get_name(0)
+    local file_path = vim.api.nvim_buf_get_name(0)
     local self = comms.default()
 
     function self.debug()
@@ -183,10 +183,12 @@ function comms.markdown()
     return self
 end
 
-return function(filetype)
-    if comms[filetype] ~= nil then
-        return comms[filetype]()
+local function run()
+    if comms[vim.bo.filetype] ~= nil then
+        return comms[vim.bo.filetype]()
     end
 
     return comms.default()
 end
+
+return run()

@@ -1,6 +1,8 @@
-local function nnoremap(k, c) vim.api.nvim_set_keymap('n', k, c, { noremap = true, silent = true }) end
-local function inoremap(k, c) vim.api.nvim_set_keymap('i', k, c, { noremap = true, silent = true }) end
-local function map(k, c) vim.api.nvim_set_keymap('', k, c, { noremap = true, silent = true }) end
+local ops = { noremap = true, silent = true }
+
+local function nnoremap(key, com) vim.keymap.set('n', key, com, ops) end
+local function inoremap(key, com) vim.keymap.set('i', key, com, ops) end
+local function map(key, com) vim.keymap.set({'n', 'n', 'o'}, key, com, ops) end
 
 vim.api.nvim_create_user_command(
     'Rename', 
@@ -18,11 +20,11 @@ vim.api.nvim_create_user_command(
 vim.api.nvim_create_user_command('W', 'w', { nargs = '*' })
 
 -- Disable arrow keys
-map("<F1>", "<Nop>")
-map("<Up>", "<Nop>")
-map("<Down>", "<Nop>")
-map("<Left>", "<Nop>")
-map("<Right>", "<Nop>")
+map("<F1>", function() end)
+map("<Up>", function() end)
+map("<Down>", function() end)
+map("<Left>", function() end)
+map("<Right>", function() end)
 
 -- Leaders this fuckery is the only way I can get this to work for some reason
 nnoremap("<Leader>t", "<Cmd>terminal<CR>")
@@ -30,13 +32,13 @@ nnoremap("<Leader>n", "<Cmd>bnext<CR>")
 nnoremap("<Leader>b", "<Cmd>bprev<CR>")
 nnoremap("<Leader>v", "<Cmd>bdelete<CR>")
 nnoremap("<Leader>c", "<Cmd>Rg<CR>")
-nnoremap("<Leader>r", "<Cmd>lua vim.lsp.buf.rename()<CR>")
+nnoremap("<Leader>r", vim.lsp.buf.rename)
 
 -- Language commands
-nnoremap("<F5>", [[<Cmd>lua require("run_helper")(vim.bo.filetype).debug()<CR>  ]])
-nnoremap("<F6>", [[<Cmd>lua require("run_helper")(vim.bo.filetype).release()<CR>]])
-nnoremap("<F7>", [[<Cmd>lua require("run_helper")(vim.bo.filetype).test()<CR>   ]])
-nnoremap("<F8>", [[<Cmd>lua require("run_helper")(vim.bo.filetype).clean()<CR>  ]])
+nnoremap("<F5>", function() require("runner").debug() end)
+nnoremap("<F6>", function() require("runner").release() end)
+nnoremap("<F7>", function() require("runner").test() end)
+nnoremap("<F8>", function() require("runner").clean() end)
 
 -- Best keymaps in vim
 nnoremap("<Tab>", "<Cmd>Files<CR>")
