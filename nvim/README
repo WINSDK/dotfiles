@@ -1,2 +1,2 @@
-NVIM config, check custom_lspconfig.lua for required LSP clients.
+NVIM config, check lsp.lua for recommended LSP clients.
 ============

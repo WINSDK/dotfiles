@@ -1,8 +1,5 @@
---require("profile").start("/tmp/nvim_profile.log", { flame = true })
-
 require('plugins')
 require('sets')
-require("custom_lspconfig")
+require('lsp')
+require('treesitter')
 require('mappings')
-
---require("profile").stop()

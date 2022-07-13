@@ -57,6 +57,7 @@ lspkind.init {
   },
 }
 
+-- Lsp front-end helper functions
 local has_words_before = function()
   local line, col = unpack(vim.api.nvim_win_get_cursor(0))
   return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
@@ -66,6 +67,7 @@ local feedkey = function(key, mode)
   vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes(key, true, true, true), mode, true)
 end
 
+-- Lsp front-end
 local cmp = require('cmp')
 cmp.setup {
   formatting = {
@@ -110,30 +112,37 @@ cmp.setup {
   }
 }
 
---[[
-depends on the binaries: rust-analyzer, clangd, pyright and optionally the vscode plugin binaries:
-typescript-language-server, vscode-css-languageserver-bin,
-vscode-html-languageserver-bin and vscode-json-languageserver 
-
-https://github.com/georgewfraser/java-language-server.git
---]]
-
 local capabilities = vim.lsp.protocol.make_client_capabilities()
 capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
 
-local servers = {'jsonls', 'tsserver', 'cssls', 'html', 'pyright', 'clangd', 'java_language_server'}
-for _, lsp in ipairs(servers) do
-  server[lsp].setup { 
-    on_attach = on_attach;
-    capabilities = capabilities;
-  }
+local binaries = {
+    { 'pyright', 'pyright', '`pip install pyright`' },
+    { 'clangd', 'clangd', 'install llvm or `npm i --location=global @clangd/install`' },
+    { 'tsserver', 'typescript-language-server', '`npm i --location=global typescript-language-server`' },
+    { 'cssls', 'vscode-css-language-server', '`npm i --location=global vscode-langservers-extracted`' },
+    { 'html', 'vscode-html-language-server', '`npm i --location=global vscode-langservers-extracted`' },
+    { 'jsonls', 'vscode-json-language-server', '`npm i --location=global vscode-langservers-extracted`' },
+}
+
+for _, triplet in ipairs(binaries) do
+    local lsp, binary, command = triplet[1], triplet[2], triplet[3]
+
+    if vim.fn.executable(binary) == 0 then
+        print(binary .. " not found")
+        print(command)
+        print(" ")
+    end
+
+    server[lsp].setup {
+      on_attach = on_attach;
+      capabilities = capabilities;
+    }
 end
 
-server.java_language_server.setup {
-  on_attach = on_attach;
-  capabilities = capabilities;
-  cmd = { "/Users/nicolas/Repos/java-language-server/dist/launch_mac.sh" };
-}
+if vim.fn.executable('rust-analyzer') == 0 then
+    print('rust-analyzer not found')
+    print('`rustup +nightly component add rust-analyzer-preview`')
+end
 
 -- Rust analyzer LSP
 server.rust_analyzer.setup {
@@ -158,6 +167,14 @@ server.rust_analyzer.setup {
   }
 }
 
+-- AutoPairs
+require("nvim-autopairs").setup {
+  check_ts = true,
+}
+
+local cmp_autopairs = require('nvim-autopairs.completion.cmp')
+cmp.event:on('confirm_done', cmp_autopairs.on_confirm_done({  map_char = { tex = '' } }))
+
 -- Visual diagnostics
 vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
   vim.lsp.diagnostic.on_publish_diagnostics, {
@@ -167,40 +184,3 @@ vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
     underline = true,
   }
 )
-
--- nvim-treesitter
-require('nvim-treesitter.configs').setup {
-  ensure_installed = {
-      "markdown",
-      "glsl",
-      "wgsl",
-      "go",
-      "html",
-      "css",
-      "javascript",
-      "python",
-      "toml",
-      "json",
-      "lua",
-      "bash",
-      "comment",
-      "c",
-      "cpp",
-      "lua",
-      "rust"
-  },
-  highlight = {
-    enable = true
-  },
-  autotag = {
-    enable = true
-  }
-}
-
--- AutoPairs
-require("nvim-autopairs").setup {
-  check_ts = true,
-}
-
-local cmp_autopairs = require('nvim-autopairs.completion.cmp')
-cmp.event:on('confirm_done', cmp_autopairs.on_confirm_done({  map_char = { tex = '' } }))
