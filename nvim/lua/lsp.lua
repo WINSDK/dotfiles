@@ -1,3 +1,5 @@
+local statusline = require('statusline')
+
 -- Neovim will generate gb's of logs for some reason when logging is set to `WARN`.
 vim.lsp.set_log_level(vim.lsp.log_levels.ERROR)
 
@@ -21,6 +23,8 @@ local on_attach = function(client, bufnr)
   elseif client.resolved_capabilities.document_range_formatting then
     buf_set_keymap("n", "<F3>", "<Cmd> lua vim.lsp.buf.range_formatting()<CR>", opts)
   end
+
+  statusline.on_attach(client)
 end
 
 -- Icons for LSP window
@@ -113,7 +117,8 @@ cmp.setup {
 }
 
 local capabilities = vim.lsp.protocol.make_client_capabilities()
-capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
+local capabilities = require('cmp_nvim_lsp').update_capabilities(capabilities)
+local capabilities = vim.tbl_extend('keep', capabilities or {}, statusline.capabilities)
 
 local binaries = {
     { 'pyright', 'pyright', '`pip install pyright`' },

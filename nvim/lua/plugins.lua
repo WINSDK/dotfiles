@@ -32,4 +32,5 @@ return require('packer').startup(function(use)
   
   -- View
   use 'airblade/vim-gitgutter'
+  use 'nvim-lua/lsp-status.nvim'
 end)

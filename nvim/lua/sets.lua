@@ -13,7 +13,7 @@ set.clipboard:append("unnamedplus")
 set.diffopt:append("iwhite")
 set.shortmess:append("c")
 
-vim.cmd("set laststatus=0 noshowmode noruler")
+set.laststatus = 3
 
 set.cmdheight = 1
 set.guifont = "Hack Nerd Font:h15"
