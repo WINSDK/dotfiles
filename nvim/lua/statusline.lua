@@ -13,9 +13,9 @@ function show_lsp_status()
         return lsp_status.status()
     end
 
-    return ''
+    return ""
 end
 
-vim.o.statusline = '%{%v:lua.show_lsp_status()%}'
+vim.o.statusline = "%{%v:lua.show_lsp_status()%}"
 
 return lsp_status

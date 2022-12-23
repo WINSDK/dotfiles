@@ -18,9 +18,9 @@ local on_attach = function(client, bufnr)
   buf_set_keymap("n", "ge", "<Cmd> lua vim.lsp.buf.declaration()<CR>", opts)
   buf_set_keymap("n", "gj", "<Cmd> lua vim.lsp.buf.code_action()<CR>", opts)
 
-  if client.resolved_capabilities.document_formatting then
+  if client.server_capabilities.documentFormattingProvider then
     buf_set_keymap("n", "<F3>", "<Cmd> lua vim.lsp.buf.formatting()<CR>", opts)
-  elseif client.resolved_capabilities.document_range_formatting then
+  elseif client.server_capabilities.documentRangeFormattingProvider then
     buf_set_keymap("n", "<F3>", "<Cmd> lua vim.lsp.buf.range_formatting()<CR>", opts)
   end
 
@@ -120,16 +120,13 @@ local capabilities = require('cmp_nvim_lsp').default_capabilities()
 local capabilities = vim.tbl_extend('keep', capabilities or {}, statusline.capabilities)
 
 local binaries = {
-    { 'pyright', 'pyright', '`pip install pyright`' },
-    { 'clangd', 'clangd', 'install llvm or `npm i --location=global @clangd/install`' },
-    { 'tsserver', 'typescript-language-server', '`npm i --location=global typescript-language-server`' },
-    { 'cssls', 'vscode-css-language-server', '`npm i --location=global vscode-langservers-extracted`' },
-    { 'html', 'vscode-html-language-server', '`npm i --location=global vscode-langservers-extracted`' },
-    { 'jsonls', 'vscode-json-language-server', '`npm i --location=global vscode-langservers-extracted`' },
+    {"pyright", "`pip install pyright`"},
+    {"clangd", "install llvm or `npm i --location=global @clangd/install`"},
+    -- {"cssmodules_ls", "`npm i --global cssmodules-language-server`"},
 }
 
 for _, triplet in ipairs(binaries) do
-    local lsp, binary, command = triplet[1], triplet[2], triplet[3]
+    local binary, command = triplet[1], triplet[2]
 
     if vim.fn.executable(binary) == 0 then
         print(binary .. " not found")
@@ -137,15 +134,15 @@ for _, triplet in ipairs(binaries) do
         print(" ")
     end
 
-    server[lsp].setup {
+    server[binary].setup {
       on_attach = on_attach;
       capabilities = capabilities;
     }
 end
 
 if vim.fn.executable('rust-analyzer') == 0 then
-    print('rust-analyzer not found')
-    print('`rustup +nightly component add rust-analyzer-preview`')
+    print("rust-analyzer not found")
+    print("`rustup +nightly component add rust-analyzer-preview`")
 end
 
 -- Rust analyzer LSP
