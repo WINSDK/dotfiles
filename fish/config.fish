@@ -7,12 +7,13 @@ abbr -a l "exa -T -L 2"
 abbr -a ls "exa"
 abbr -a ll "exa -aghHl"
 abbr -a tree "rg --files | tree --fromfile"
+abbr -a make "make -j$(math $(nproc) + 1)"
 
 switch (uname)
     case Linux
         abbr -a camera "mpv av://v4l2:/dev/video0"
         abbr -a objdump "objdump -M intel -C"
-        abbr -a packages "emerge -epv @world | rg -o '\[ebuild   R    \] (.*)::gentoo  USE' -r '\$1'"
+        abbr -a packages "emerge -epv @world"
     case '*'
         abbr -a objdump "objdump -x86-asm-syntax=intel -C"
 end
@@ -23,11 +24,12 @@ fish_add_path -P ~/Projects/utils
 fish_add_path -P ~/Projects/utils/git-size/target/release
 
 export GPG_TTY=$(tty)
+export TERM="xterm"
+
 set EDITOR nvim
-set TERM screen-256color
 set PYTHON_HOST_PROG "/usr/bin/python2"
 set PYTHON3_HOST_PROG "/usr/bin/python3"
-set LLVM_HOME "/usr/lib/llvm/14"
+set LLVM_HOME "/usr/lib/llvm/llvm"
 
 # colored man output
 setenv LESS_TERMCAP_mb \e'[01;31m'       # begin blinking
@@ -40,7 +42,7 @@ setenv LESS_TERMCAP_us \e'[04;38;5;146m' # begin underline
 
 if status --is-login
   if test -z "$DISPLAY" -a $XDG_VTNR -eq 1
-    exec startx > /var/log/i3.log 2>&1
+    exec dbus-run-session sway
   end
 end
 
@@ -66,7 +68,7 @@ function fish_prompt
   end
 
   set_color blue
-  echo -n " » "
+  echo -en " » \e[2 q"
 end
 
 function fish_greeting 
