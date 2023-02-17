@@ -5,14 +5,20 @@ local function inoremap(key, com) vim.keymap.set('i', key, com, ops) end
 local function map(key, com) vim.keymap.set({'n', 'n', 'o'}, key, com, ops) end
 
 vim.api.nvim_create_user_command(
-    'Rename', 
+    "Fuck",
+    "CellularAutomaton make_it_rain",
+    {}
+)
+
+vim.api.nvim_create_user_command(
+    "Rename",
     function (...) vim.lsp.buf.rename() end,
     {}
 )
 
 vim.api.nvim_create_user_command(
-    'Format', 
-    function(...) vim.lsp.buf.formatting() end,
+    "Format",
+    function(...) vim.lsp.buf.format({ async = true }) end,
     {}
 )
 

@@ -12,10 +12,10 @@ abbr -a make "make -j$(math $(nproc) + 1)"
 switch (uname)
     case Linux
         abbr -a camera "mpv av://v4l2:/dev/video0"
-        abbr -a objdump "objdump -M intel -C"
+        abbr -a objdump "llvm-objdump -M intel -C"
         abbr -a packages "emerge -epv @world"
     case '*'
-        abbr -a objdump "objdump -x86-asm-syntax=intel -C"
+        abbr -a objdump "llvm-objdump -x86-asm-syntax=intel -C"
 end
 
 fish_add_path -P ~/.local/bin
@@ -25,6 +25,7 @@ fish_add_path -P ~/Projects/utils/git-size/target/release
 
 export GPG_TTY=$(tty)
 export TERM="xterm"
+export LANG="en_US.utf8"
 
 set EDITOR nvim
 set PYTHON_HOST_PROG "/usr/bin/python2"

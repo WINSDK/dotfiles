@@ -8,6 +8,9 @@ end
 return require('packer').startup(function(use)
   -- Colors
   use 'sainnhe/gruvbox-material'
+
+  -- Useless nonesense
+  use 'eandrju/cellular-automaton.nvim'
   
   -- LSP
   use { 'nvim-treesitter/nvim-treesitter', run = ':TSUpdate' }
