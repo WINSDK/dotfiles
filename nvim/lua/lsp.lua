@@ -122,7 +122,6 @@ local capabilities = vim.tbl_extend('keep', capabilities or {}, statusline.capab
 local binaries = {
     {"pyright", "`pip install pyright`"},
     {"clangd", "install llvm or `npm i --location=global @clangd/install`"},
-    -- {"cssmodules_ls", "`npm i --global cssmodules-language-server`"},
 }
 
 for _, triplet in ipairs(binaries) do
@@ -139,6 +138,16 @@ for _, triplet in ipairs(binaries) do
       capabilities = capabilities;
     }
 end
+
+if vim.fn.executable('erlang_ls') == 0 then
+    print("erlangls")
+    print("https://github.com/erlang-ls/erlang_ls")
+end
+
+server.erlangls.setup {
+    on_attach = on_attach;
+    capabilities = capabilities;
+}
 
 if vim.fn.executable('rust-analyzer') == 0 then
     print("rust-analyzer not found")

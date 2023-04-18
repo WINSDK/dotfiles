@@ -7,6 +7,7 @@ set.number = true
 set.encoding = "utf-8"
 set.history = 500
 set.backspace = "indent,eol,start"
+set.spell = true
 
 set.synmaxcol = 500
 set.clipboard:append("unnamedplus")

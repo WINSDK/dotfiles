@@ -1,39 +1,53 @@
-local fn = vim.fn
-local install_path = fn.stdpath('data')..'/site/pack/packer/start/packer.nvim'
-if fn.empty(fn.glob(install_path)) > 0 then
-  fn.system({'git', 'clone', 'https://github.com/wbthomason/packer.nvim', install_path})
-  vim.cmd 'packadd packer.nvim'
+local lazypath = vim.fn.stdpath 'data' .. '/lazy/lazy.nvim'
+
+if not vim.loop.fs_stat(lazypath) then
+  vim.fn.system {
+    'git',
+    'clone',
+    '--filter=blob:none',
+    'https://github.com/folke/lazy.nvim.git',
+    '--branch=stable', -- latest stable release
+    lazypath,
+  }
 end
 
-return require('packer').startup(function(use)
+vim.opt.rtp:prepend(lazypath)
+
+return require('lazy').setup({
   -- Colors
-  use 'sainnhe/gruvbox-material'
+  'sainnhe/gruvbox-material',
 
   -- Useless nonesense
-  use 'eandrju/cellular-automaton.nvim'
+  'eandrju/cellular-automaton.nvim',
   
   -- LSP
-  use { 'nvim-treesitter/nvim-treesitter', run = ':TSUpdate' }
-  use 'neovim/nvim-lspconfig'
-  use 'nvim-lua/lsp_extensions.nvim'
-  use 'onsails/lspkind-nvim'
-  use {
+  {
+    'nvim-treesitter/nvim-treesitter',
+    config = function()
+      pcall(require('nvim-treesitter.install').update { with_sync = true })
+    end,
+  },
+
+  'neovim/nvim-lspconfig',
+  'nvim-lua/lsp_extensions.nvim',
+  'onsails/lspkind-nvim',
+  {
     "hrsh7th/nvim-cmp",
-    requires = {
+    dependencies = {
       "hrsh7th/vim-vsnip",
       "hrsh7th/cmp-nvim-lsp",
-	  "hrsh7th/cmp-nvim-lua",
-	  "hrsh7th/cmp-path"
+      "hrsh7th/cmp-nvim-lua",
+      "hrsh7th/cmp-path"
     }
-  }
+  },
   
   -- Navigation
-  use { 'junegunn/fzf', run = 'fzf#install()' }
-  use 'junegunn/fzf.vim'
-  use 'tpope/vim-fugitive'
-  use 'windwp/nvim-autopairs'
+  { 'junegunn/fzf', run = 'fzf#install()' },
+  'junegunn/fzf.vim',
+  'tpope/vim-fugitive',
+  'windwp/nvim-autopairs',
   
   -- View
-  use 'airblade/vim-gitgutter'
-  use 'nvim-lua/lsp-status.nvim'
-end)
+  'airblade/vim-gitgutter',
+  'nvim-lua/lsp-status.nvim'
+}, {})
