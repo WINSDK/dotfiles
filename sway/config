@@ -14,6 +14,8 @@ for_window [class="zoom"] floating enable
 for_window [class="zoom" title="Zoom - Licensed Account"] floating disable
 for_window [class="zoom" title="Zoom Meeting"] floating disable
 
+for_window [class="ghidra*"] floating enable
+
 ### Multimedia binds
 
 bindsym XF86AudioRaiseVolume exec pactl set-sink-volume @DEFAULT_SINK@ +5%
