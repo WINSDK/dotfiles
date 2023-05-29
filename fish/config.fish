@@ -1,5 +1,7 @@
 bass source /etc/profile
 
+bind \t accept-autosuggestion
+
 abbr -a cat bat
 abbr -a aria2c "aria2c --enable-dht=true"
 abbr -a hexdump "hexdump -C"
