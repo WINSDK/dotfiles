@@ -5,9 +5,10 @@ font Liga SFMono Nerd Font SemiBold 10
 # Autostarts
 exec python3 $HOME/Repos/autotiling/autotiling/main.py
 exec gentoo-pipewire-launcher
+exec /usr/libexec/xdg-desktop-portal-gtk
 
 # Background
-output * bg $HOME/Pictures/y.png fill
+output * bg $HOME/Pictures/monster.png stretch
 
 ### Floating windows
 for_window [class="zoom"] floating enable
@@ -157,15 +158,15 @@ set $gentoo_light  #61538D
 set $gentoo_light2 #6E56AF
 set $gentoo_green  #DDDFFF
 set $gentoo_red    #D9534F
-set $cool_gray     #FFFFFF
+set $cool_gray     #222222
 
-#class                  border          background  text      indicator       child_border
-client.focused          #A2A9B0         $black      #ffffff   $cool_gray      #A2A9B0
-client.focused_inactive $gentoo_gray    $black      #ffffff   #484e50         $gentoo_gray
-client.unfocused        $gentoo_gray    $black      #888888   #292d2e         $gentoo_gray
-client.urgent           $gentoo_gray    $black      #ffffff   #900000         $darkred
-client.placeholder      $darkred        $darkred    $darkred  $darkred        $darkred
-client.background       $black
+#class                  border          background   text      indicator       child_border
+client.focused          #A2A9B0         $gentoo_gray #cccccc   $cool_gray      #A2A9B0
+client.focused_inactive $gentoo_gray    $gentoo_gray #cccccc   #484e50         $gentoo_gray
+client.unfocused        $gentoo_gray    $gentoo_gray #cccccc   #292d2e         $gentoo_gray
+client.urgent           $gentoo_gray    $gentoo_gray #cccccc   #900000         $darkred
+client.placeholder      $darkred        $darkred     $darkred  $darkred        $darkred
+client.background       $cool_gray
 
 # resize window (you can also use the mouse for that)
 mode "resize" {
@@ -195,7 +196,7 @@ bar {
         separator #666666
         background #222222
         statusline $cool_gray
-        focused_workspace  #CECECE      $cool_gray     #1D2021
+        focused_workspace  #CECECE      #cccccc        #1D2021
         active_workspace   #333333      #333333        #888888
         inactive_workspace $gentoo_gray #333333        #f1f1f1
         urgent_workspace   #000000      $gentoo_red    #000000
