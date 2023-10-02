@@ -72,7 +72,7 @@ setenv LESS_TERMCAP_ue \e'[0m'           # end underline
 setenv LESS_TERMCAP_us \e'[04;38;5;146m' # begin underline
 
 if status --is-login
-  if test -z "$DISPLAY" -a $XDG_VTNR -eq 1
+  if test -z "$DISPLAY" -a -n "$XDG_VTNR" -a "$XDG_VTNR" -eq 1
     exec dbus-run-session sway
   end
 end
