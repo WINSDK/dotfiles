@@ -9,7 +9,7 @@ SETUVAR _fish_abbr_l:exa\x20\x2dT\x20\x2dL\x202
 SETUVAR _fish_abbr_ll:exa\x20\x2daghHl
 SETUVAR _fish_abbr_ls:exa
 SETUVAR _fish_abbr_make:make\x20\x2dj9
-SETUVAR _fish_abbr_objdump:llvm\x2dobjdump\x20\x2dM\x20intel\x20\x2dC
+SETUVAR _fish_abbr_objdump:objdump\x20\x2dM\x20intel\x20\x2dC
 SETUVAR _fish_abbr_packages:emerge\x20\x2depv\x20\x40world
 SETUVAR _fish_abbr_tree:rg\x20\x2d\x2dfiles\x20\x7c\x20tree\x20\x2d\x2dfromfile
 SETUVAR base16_theme:gruvbox\x2ddark\x2dmedium

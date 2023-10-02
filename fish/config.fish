@@ -1,21 +1,42 @@
-bass source /etc/profile
+bind \e accept-autosuggestion
 
-bind \t accept-autosuggestion
+if test -f /etc/config
+    bass source /etc/profile
+end
 
-abbr -a cat bat
-abbr -a aria2c "aria2c --enable-dht=true"
-abbr -a hexdump "hexdump -C"
-abbr -a l "exa -T -L 2"
-abbr -a ls "exa"
-abbr -a ll "exa -aghHl"
-abbr -a tree "rg --files | tree --fromfile"
 abbr -a make "make -j$(math $(nproc) + 1)"
+
+if command -q bat
+    abbr -a cat "bat"
+end
+
+if command -q aria2c
+    abbr -a aria2c "aria2c --enable-dht=true"
+end
+
+if command -q hexdump
+    abbr -a hexdump "hexdump -C"
+end
+
+if command -q exa
+    abbr -a l "exa -T -L 2"
+    abbr -a ls "exa"
+    abbr -a ll "exa -aghHl"
+end
+
+if command -q tree && command -q rg
+    abbr -a tree "rg --files | tree --fromfile"
+end
 
 switch (uname)
     case Linux
-        abbr -a camera "mpv av://v4l2:/dev/video0"
-        abbr -a objdump "llvm-objdump -M intel -C"
-        abbr -a packages "emerge -epv @world"
+        if command -q objdump
+            abbr -a objdump "objdump -M intel -C"
+        end
+
+        if command -q emerge
+            abbr -a packages "emerge -epv @world"
+        end
     case '*'
         abbr -a objdump "llvm-objdump -x86-asm-syntax=intel -C"
 end
@@ -28,8 +49,15 @@ fish_add_path -P ~/Projects/utils/git-size/target/release
 export GPG_TTY=$(tty)
 export TERM="xterm"
 export LANG="en_US.utf8"
+export XCURSOR_THEME="Adwaita"
+export KITTY_ENABLE_WAYLAND="1"
 
-set EDITOR nvim
+if command -q nvim
+    set EDITOR nvim
+else
+    set EDITOR vim
+end
+
 set PYTHON_HOST_PROG "/usr/bin/python2"
 set PYTHON3_HOST_PROG "/usr/bin/python3"
 set LLVM_HOME "/usr/lib/llvm/llvm"
