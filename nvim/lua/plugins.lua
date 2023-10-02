@@ -16,9 +16,6 @@ vim.opt.rtp:prepend(lazypath)
 return require('lazy').setup({
   -- Colors
   'sainnhe/gruvbox-material',
-
-  -- Useless nonesense
-  'eandrju/cellular-automaton.nvim',
   
   -- LSP
   {
@@ -49,5 +46,5 @@ return require('lazy').setup({
   
   -- View
   'airblade/vim-gitgutter',
-  'nvim-lua/lsp-status.nvim'
+  'nvim-lua/lsp-status.nvim',
 }, {})
