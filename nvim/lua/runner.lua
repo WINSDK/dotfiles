@@ -58,10 +58,6 @@ local function abs_path_to_exec(str)
 	end
 end
 
-local function executable(cmd)
-  return vim.fn.executable(cmd) == 1
-end
-
 local function open_term(cmd, insert_mode)
   -- default arguement
   insert_mode = insert_mode or false
@@ -148,7 +144,7 @@ function comms.python()
  	local self = comms.default()
 
     local python_cmd = ""
-    if executable("py") then
+    if vim.fn.executable(cmd) == 1 then
         python_cmd = "py"
     else
         python_cmd = "python3"

@@ -13,16 +13,46 @@ end
 
 vim.opt.rtp:prepend(lazypath)
 
-return require('lazy').setup({
+local plugins = {
   -- Colors
   'sainnhe/gruvbox-material',
   
   -- LSP
   {
     'nvim-treesitter/nvim-treesitter',
-    config = function()
-      pcall(require('nvim-treesitter.install').update { with_sync = true })
-    end,
+    build = ":TSUpdate",
+    config = function ()
+        local configs = require("nvim-treesitter.configs")
+
+        configs.setup({
+          ensure_installed = {
+              "markdown",
+              "glsl",
+              "wgsl",
+              "go",
+              "html",
+              "css",
+              "javascript",
+              "python",
+              "toml",
+              "json",
+              "lua",
+              "bash",
+              "comment",
+              "c",
+              "cpp",
+              "lua",
+              "rust"
+          },
+          sync_install = false,
+          highlight = {
+            enable = true
+          },
+          autotag = {
+            enable = true
+          }
+        })
+    end
   },
 
   'neovim/nvim-lspconfig',
@@ -39,7 +69,10 @@ return require('lazy').setup({
   },
   
   -- Navigation
-  { 'junegunn/fzf', run = 'fzf#install()' },
+  {
+    'junegunn/fzf',
+    build = 'fzf#install()'
+  },
   'junegunn/fzf.vim',
   'tpope/vim-fugitive',
   'windwp/nvim-autopairs',
@@ -47,4 +80,6 @@ return require('lazy').setup({
   -- View
   'airblade/vim-gitgutter',
   'nvim-lua/lsp-status.nvim',
-}, {})
+}
+
+require('lazy').setup(plugins)

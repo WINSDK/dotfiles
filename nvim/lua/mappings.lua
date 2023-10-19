@@ -2,7 +2,6 @@ local ops = { noremap = true, silent = true }
 
 local function nnoremap(key, com) vim.keymap.set('n', key, com, ops) end
 local function inoremap(key, com) vim.keymap.set('i', key, com, ops) end
-local function map(key, com) vim.keymap.set({'n', 'n', 'o'}, key, com, ops) end
 
 vim.api.nvim_create_user_command(
     "Rename",
@@ -12,7 +11,15 @@ vim.api.nvim_create_user_command(
 
 vim.api.nvim_create_user_command(
     "Format",
-    function(...) vim.lsp.buf.format({ async = true }) end,
+    function(...)
+        if vim.bo.filetype == "python" then
+          if vim.fn.executable("autopep8") == 1 then
+            vim.cmd("!autopep8 % --in-place")
+          end
+        else
+          vim.lsp.buf.format({ async = true })
+        end
+    end,
     {}
 )
 
@@ -20,11 +27,11 @@ vim.api.nvim_create_user_command(
 vim.api.nvim_create_user_command('W', 'w', { nargs = '*' })
 
 -- Disable arrow keys
-map("<F1>", function() end)
-map("<Up>", function() end)
-map("<Down>", function() end)
-map("<Left>", function() end)
-map("<Right>", function() end)
+nnoremap("<F1>", function() end)
+nnoremap("<Up>", function() end)
+nnoremap("<Down>", function() end)
+nnoremap("<Left>", function() end)
+nnoremap("<Right>", function() end)
 
 -- Leaders this fuckery is the only way I can get this to work for some reason
 nnoremap("<Leader>t", "<Cmd>terminal<CR>")

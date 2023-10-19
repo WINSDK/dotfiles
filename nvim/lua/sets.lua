@@ -60,10 +60,6 @@ vim.g.netrw_winsize = 25
 vim.g.completion_matching_strategy_list = { 'exact', 'substring', 'fuzzy' }
 vim.g.mapleader = " "
 
-if not vim.fn.has("gui_running") then
-  vim.g.t_Co = 256
-end
-
 vim.api.nvim_create_autocmd('Filetype', {
   pattern = '*',
   callback = function()

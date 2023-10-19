@@ -1,30 +1,30 @@
 local statusline = require('statusline')
 
--- Neovim will generate gb's of logs for some reason when logging is set to `WARN`.
+-- Neovim will generate gb's of logs for some reason when logging is set to `WARN`
 vim.lsp.set_log_level(vim.lsp.log_levels.ERROR)
+
+vim.api.nvim_create_autocmd("LspAttach", {
+  group = vim.api.nvim_create_augroup('UserLspConfig', {}),
+  callback = function(ev)
+
+    local function nnoremap(key, com)
+        vim.keymap.set('n', key, com, { buffer = ev.buf })
+    end
+
+    nnoremap("~",  vim.diagnostic.open_float)
+    nnoremap("gd", vim.lsp.buf.definition)
+    nnoremap("gi", vim.lsp.buf.implementation)
+    nnoremap("gt", vim.lsp.buf.type_definition)
+    nnoremap("gs", vim.lsp.buf.document_symbol)
+    nnoremap("ge", vim.lsp.buf.declaration)
+    nnoremap("gj", vim.lsp.buf.code_action)
+    nnoremap("<space>f", function() vim.lsp.buf.format { async = true } end)
+  end,
+})
 
 local server = require('lspconfig')
 local on_attach = function(client, bufnr)
-  local function buf_set_keymap(...) vim.api.nvim_buf_set_keymap(bufnr, ...) end
-  local function buf_set_option(...) vim.api.nvim_buf_set_option(bufnr, ...) end
-  local opts = { noremap = true, silent = true }
-
-  -- LSP Code Navigation
-  buf_set_keymap("n", "~",  "<Cmd> lua vim.diagnostic.open_float()<CR>", opts)
-  buf_set_keymap("n", "gd", "<Cmd> lua vim.lsp.buf.definition()<CR>", opts)
-  buf_set_keymap("n", "gi", "<Cmd> lua vim.lsp.buf.implementation()<CR>", opts)
-  buf_set_keymap("n", "gt", "<Cmd> lua vim.lsp.buf.type_definition()<CR>", opts)
-  buf_set_keymap("n", "gs", "<Cmd> lua vim.lsp.buf.document_symbol()<CR>", opts)
-  buf_set_keymap("n", "ge", "<Cmd> lua vim.lsp.buf.declaration()<CR>", opts)
-  buf_set_keymap("n", "gj", "<Cmd> lua vim.lsp.buf.code_action()<CR>", opts)
-
-  if client.server_capabilities.documentFormattingProvider then
-    buf_set_keymap("n", "<F3>", "<Cmd> lua vim.lsp.buf.formatting()<CR>", opts)
-  elseif client.server_capabilities.documentRangeFormattingProvider then
-    buf_set_keymap("n", "<F3>", "<Cmd> lua vim.lsp.buf.range_formatting()<CR>", opts)
-  end
-
-  statusline.on_attach(client)
+    statusline.on_attach(client)
 end
 
 -- Icons for LSP window
@@ -134,30 +134,20 @@ for _, triplet in ipairs(binaries) do
     end
 
     server[binary].setup {
-      on_attach = on_attach;
-      capabilities = capabilities;
+      on_attach = on_attach,
+      capabilities = capabilities,
     }
 end
 
-if vim.fn.executable('erlang_ls') == 0 then
-    print("erlangls")
-    print("https://github.com/erlang-ls/erlang_ls")
-end
-
-server.erlangls.setup {
-    on_attach = on_attach;
-    capabilities = capabilities;
-}
-
 if vim.fn.executable('rust-analyzer') == 0 then
     print("rust-analyzer not found")
-    print("`rustup +nightly component add rust-analyzer-preview`")
+    print("`rustup component add rust-analyzer`")
 end
 
 -- Rust analyzer LSP
 server.rust_analyzer.setup {
-  on_attach = on_attach;
-  capabilities = capabilities;
+  on_attach = on_attach,
+  capabilities = capabilities,
   settings = {
     ["rust-analyzer"] = {
       cargo = {
