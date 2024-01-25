@@ -11,7 +11,7 @@ if command -q bat
 end
 
 if command -q aria2c
-    abbr -a aria2c "aria2c --enable-dht=true"
+    abbr -a aria2c "aria2c --async-dns=false --enable-dht=true"
 end
 
 if command -q hexdump
@@ -38,7 +38,7 @@ switch (uname)
             abbr -a packages "emerge -epv @world"
         end
     case '*'
-        abbr -a objdump "llvm-objdump -x86-asm-syntax=intel -C"
+        abbr -a objdump "objdump -x86-asm-syntax=intel -C"
 end
 
 fish_add_path -P ~/.local/bin
@@ -48,9 +48,11 @@ fish_add_path -P ~/Projects/utils/git-size/target/release
 
 export GPG_TTY=$(tty)
 export TERM="xterm"
-export LANG="en_US.utf8"
 export XCURSOR_THEME="Adwaita"
 export KITTY_ENABLE_WAYLAND="1"
+
+# Fix ghidra gray screen on wayland
+export _JAVA_AWT_WM_NONREPARENTING="1"
 
 if command -q nvim
     set EDITOR nvim
@@ -70,12 +72,6 @@ setenv LESS_TERMCAP_se \e'[0m'           # end standout-mode
 setenv LESS_TERMCAP_so \e'[38;5;246m'    # begin standout-mode - info box
 setenv LESS_TERMCAP_ue \e'[0m'           # end underline
 setenv LESS_TERMCAP_us \e'[04;38;5;146m' # begin underline
-
-if status --is-login
-  if test -z "$DISPLAY" -a -n "$XDG_VTNR" -a "$XDG_VTNR" -eq 1
-    exec dbus-run-session sway
-  end
-end
 
 if status --is-interactive
   if type -q base16-gruvbox-dark-medium
