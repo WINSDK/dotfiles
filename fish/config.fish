@@ -1,17 +1,11 @@
 bind \e accept-autosuggestion
 
-if test -f /etc/config
-    bass source /etc/profile
-end
-
-abbr -a make "make -j$(math $(nproc) + 1)"
+abbr -a lldb "rust-lldb"
+abbr -a gdb "rust-gdb"
+abbr -a objdump "objdump -M intel -C"
 
 if command -q bat
     abbr -a cat "bat"
-end
-
-if command -q aria2c
-    abbr -a aria2c "aria2c --async-dns=false --enable-dht=true"
 end
 
 if command -q hexdump
@@ -29,30 +23,34 @@ if command -q tree && command -q rg
 end
 
 switch (uname)
-    case Linux
-        if command -q objdump
-            abbr -a objdump "objdump -M intel -C"
-        end
+    case Darwin
+        set -U fish_user_paths /opt/homebrew/bin/ $fish_user_paths
+        abbr -a make "bear -- make -j$(math $(sysctl -n hw.physicalcpu) + 1)"
+        abbr -a jupyter "jupyter lab --app-dir /opt/homebrew/share/jupyter/lab"
 
-        if command -q emerge
-            abbr -a packages "emerge -epv @world"
+        if command -q aria2c
+            abbr -a aria2c "aria2c --enable-dht=true"
         end
-    case '*'
-        abbr -a objdump "objdump -x86-asm-syntax=intel -C"
+    case Linux
+        abbr -a make "make -j$(math $(nproc) + 1)"
+        abbr -a jupyter "jupyter lab"
+
+        export TERM="xterm"
+        export XCURSOR_THEME="Adwaita"
+        export KITTY_ENABLE_WAYLAND="1"
+        export GPG_TTY=$(tty)
+
+        # Fix ghidra gray screen on wayland
+        export _JAVA_AWT_WM_NONREPARENTING="1"
+
+        if command -q aria2c
+            abbr -a aria2c "aria2c --async-dns=false --enable-dht=true"
+        end
 end
 
 fish_add_path -P ~/.local/bin
 fish_add_path -P ~/.cargo/bin
 fish_add_path -P ~/Projects/utils
-fish_add_path -P ~/Projects/utils/git-size/target/release
-
-export GPG_TTY=$(tty)
-export TERM="xterm"
-export XCURSOR_THEME="Adwaita"
-export KITTY_ENABLE_WAYLAND="1"
-
-# Fix ghidra gray screen on wayland
-export _JAVA_AWT_WM_NONREPARENTING="1"
 
 if command -q nvim
     set EDITOR nvim
