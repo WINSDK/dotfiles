@@ -60,16 +60,24 @@ vim.g.netrw_winsize = 25
 vim.g.completion_matching_strategy_list = { 'exact', 'substring', 'fuzzy' }
 vim.g.mapleader = " "
 
+-- Set filetype to cpp for .metal files
+vim.api.nvim_create_autocmd({'BufRead', 'BufNewFile'}, {
+  pattern = '*.metal',
+  callback = function()
+    vim.bo.filetype = 'cpp'
+  end
+})
+
 vim.api.nvim_create_autocmd('Filetype', {
   pattern = '*',
   callback = function()
       local filetype = vim.bo.filetype
       local linewidths = {
-        c         = "80",
-        cpp       = "80",
         python    = "80",
         gitcommit = "80",
         markdown  = "80",
+        c         = "100",
+        cpp       = "100",
         rust      = "100",
       }
 

@@ -119,25 +119,14 @@ cmp.setup {
 local capabilities = require('cmp_nvim_lsp').default_capabilities()
 local capabilities = vim.tbl_extend('keep', capabilities or {}, statusline.capabilities)
 
-local binaries = {
-    {"pyright", "`pip install pyright`"},
-    {"clangd", "install llvm or `npm i --location=global @clangd/install`"},
-}
-
-for _, triplet in ipairs(binaries) do
-    local binary, command = triplet[1], triplet[2]
-
-    if vim.fn.executable(binary) == 0 then
-        print(binary .. " not found")
-        print(command)
-        print(" ")
-    end
-
-    server[binary].setup {
-      on_attach = on_attach,
-      capabilities = capabilities,
-    }
+if vim.fn.executable('pyright') == 0 then
+    print("pyright not found")
 end
+
+server.pyright.setup {
+    on_attach = on_attach,
+    capabilities = capabilities,
+}
 
 if vim.fn.executable('rust-analyzer') == 0 then
     print("rust-analyzer not found")
@@ -146,25 +135,38 @@ end
 
 -- Rust analyzer LSP
 server.rust_analyzer.setup {
-  on_attach = on_attach,
-  capabilities = capabilities,
-  settings = {
-    ["rust-analyzer"] = {
-      cargo = {
-          loadOutDirsFromCheck = true
-      },
-      checkOnSave = {
-        allTargets = false
-      },
-      procMacro = {
-        enable = false
-      },
-      diagnostics = {
-        disabled = {"inactive-code", "unresolved-proc-macro", "mismatched-arg-count"},
-        enableExperimental = true
-      }
+    on_attach = on_attach,
+    capabilities = capabilities,
+    settings = {
+        ["rust-analyzer"] = {
+            cargo = {
+                loadOutDirsFromCheck = true
+            },
+            checkOnSave = {
+                allTargets = false
+            },
+            procMacro = {
+                enable = false
+            },
+            diagnostics = {
+                disabled = {"inactive-code", "unresolved-proc-macro", "mismatched-arg-count"},
+                enableExperimental = true
+            }
+        }
     }
-  }
+}
+
+if vim.fn.executable('rust-analyzer') == 0 then
+    print("clangd not found")
+end
+
+-- Clangd LSP
+server.clangd.setup {
+    on_attach = on_attach,
+    capabilities = capabilities,
+    root_dir = function()
+        return vim.fs.dirname(vim.fs.find({"compile_commands.json", ".git"}, { upward = true })[1])
+    end
 }
 
 -- AutoPairs
