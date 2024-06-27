@@ -61,18 +61,16 @@ local plugins = {
   {
     "hrsh7th/nvim-cmp",
     dependencies = {
-      "hrsh7th/vim-vsnip",
-      "hrsh7th/cmp-nvim-lsp",
-      "hrsh7th/cmp-nvim-lua",
-      "hrsh7th/cmp-path"
+        "hrsh7th/vim-vsnip",
+        "hrsh7th/cmp-nvim-lsp",
+        "hrsh7th/cmp-nvim-lua",
+        "hrsh7th/cmp-path"
     }
   },
   
   -- Navigation
-  {
-    'junegunn/fzf',
-    build = 'fzf#install()'
-  },
+{
+  "junegunn/fzf", build = "./install --bin" },
   'junegunn/fzf.vim',
   'tpope/vim-fugitive',
   'windwp/nvim-autopairs',
