@@ -58,7 +58,6 @@ local plugins = {
 
   'neovim/nvim-lspconfig',
   'nvim-lua/lsp_extensions.nvim',
-  'onsails/lspkind-nvim',
   {
     "hrsh7th/nvim-cmp",
     dependencies = {

@@ -28,40 +28,6 @@ local on_attach = function(client, bufnr)
   statusline.on_attach(client)
 end
 
--- Icons for LSP window
-local lspkind = require('lspkind')
-lspkind.init {
-  mode = 'symbol_text',
-  preset = 'codicons',
-  symbol_map = {
-    Text = "",
-    Method = "",
-    Function = "",
-    Constructor = "",
-    Field = "ﰠ",
-    Variable = "",
-    Class = "ﴯ",
-    Interface = "",
-    Module = "",
-    Property = "ﰠ",
-    Unit = "塞",
-    Value = "",
-    Enum = "",
-    Keyword = "",
-    Snippet = "",
-    Color = "",
-    File = "",
-    Reference = "",
-    Folder = "",
-    EnumMember = "",
-    Constant = "",
-    Struct = "פּ",
-    Event = "",
-    Operator = "",
-    TypeParameter = ""
-  },
-}
-
 -- Lsp front-end helper functions
 local has_words_before = function()
   local line, col = unpack(vim.api.nvim_win_get_cursor(0))
@@ -72,12 +38,40 @@ local feedkey = function(key, mode)
   vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes(key, true, true, true), mode, true)
 end
 
+local symbol_map = {
+  Text = "TEXT",
+  Method = "METH",
+  Function = "FUNC",
+  Constructor = "NEW",
+  Field = "FIELD",
+  Variable = "VAR",
+  Class = "CLASS",
+  Interface = "INTER",
+  Module = "MOD",
+  Property = "PROP",
+  Unit = "UNIT",
+  Value = "VAL",
+  Enum = "ENUM",
+  Keyword = "KEY",
+  Snippet = "SNIP",
+  Color = "COLOR",
+  File = "FILE",
+  Reference = "REF",
+  Folder = "FOLD",
+  EnumMember = "MEMBER",
+  Constant = "CONST",
+  Struct = "STRUCT",
+  Event = "EVENT",
+  Operator = "OP",
+  TypeParameter = ""
+}
+
 -- Lsp front-end
 local cmp = require('cmp')
 cmp.setup {
   formatting = {
     format = function(_, vim_item)
-      vim_item.kind = lspkind.presets.default[vim_item.kind]
+      vim_item.kind = symbol_map[vim_item.kind]
       return vim_item
     end
   },
