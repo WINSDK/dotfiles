@@ -42,7 +42,8 @@ local plugins = {
               "c",
               "cpp",
               "lua",
-              "rust"
+              "rust",
+              "ocaml"
           },
           sync_install = false,
           highlight = {

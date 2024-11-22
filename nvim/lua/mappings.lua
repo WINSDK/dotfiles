@@ -4,23 +4,23 @@ local function nnoremap(key, com) vim.keymap.set('n', key, com, ops) end
 local function inoremap(key, com) vim.keymap.set('i', key, com, ops) end
 
 vim.api.nvim_create_user_command(
-    "Rename",
-    function (...) vim.lsp.buf.rename() end,
-    {}
+  "Rename",
+  function (...) vim.lsp.buf.rename() end,
+  {}
 )
 
 vim.api.nvim_create_user_command(
-    "Format",
-    function(...)
-        if vim.bo.filetype == "python" then
-          if vim.fn.executable("autopep8") == 1 then
-            vim.cmd("!autopep8 % --in-place")
-          end
-        else
-          vim.lsp.buf.format({ async = true })
+  "Format",
+  function(...)
+      if vim.bo.filetype == "python" then
+        if vim.fn.executable("autopep8") == 1 then
+          vim.cmd("!autopep8 % --in-place")
         end
-    end,
-    {}
+      else
+        vim.lsp.buf.format({ async = true })
+      end
+  end,
+  {}
 )
 
 -- Ignore :W command

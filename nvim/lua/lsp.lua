@@ -22,9 +22,10 @@ vim.api.nvim_create_autocmd("LspAttach", {
   end,
 })
 
+-- Status bar on bottom (lsp progress)
 local server = require('lspconfig')
 local on_attach = function(client, bufnr)
-    statusline.on_attach(client)
+  statusline.on_attach(client)
 end
 
 -- Icons for LSP window
@@ -135,38 +136,47 @@ end
 
 -- Rust analyzer LSP
 server.rust_analyzer.setup {
-    on_attach = on_attach,
-    capabilities = capabilities,
-    settings = {
-        ["rust-analyzer"] = {
-            cargo = {
-                loadOutDirsFromCheck = true
-            },
-            checkOnSave = {
-                allTargets = false
-            },
-            procMacro = {
-                enable = false
-            },
-            diagnostics = {
-                disabled = {"inactive-code", "unresolved-proc-macro", "mismatched-arg-count"},
-                enableExperimental = true
-            }
-        }
+  on_attach = on_attach,
+  capabilities = capabilities,
+  settings = {
+    ["rust-analyzer"] = {
+      cargo = {
+        buildScripts = {
+          enable = true
+        },
+        loadOutDirsFromCheck = true
+      },
+      checkOnSave = {
+        allTargets = false
+      },
+      procMacro = {
+        enable = false
+      },
+      diagnostics = {
+        disabled = {"inactive-code", "unresolved-proc-macro", "mismatched-arg-count"},
+        enableExperimental = true
+      }
     }
+  }
 }
 
 if vim.fn.executable('rust-analyzer') == 0 then
-    print("clangd not found")
+  print("clangd not found")
 end
 
 -- Clangd LSP
 server.clangd.setup {
-    on_attach = on_attach,
-    capabilities = capabilities,
-    root_dir = function()
-        return vim.fs.dirname(vim.fs.find({"compile_commands.json", ".git"}, { upward = true })[1])
-    end
+  on_attach = on_attach,
+  capabilities = capabilities,
+  root_dir = function()
+    return vim.fs.dirname(vim.fs.find({"compile_commands.json", ".git"}, { upward = true })[1])
+  end
+}
+
+-- Occaml LSP
+server.ocamllsp.setup {
+  on_attach = on_attach,
+  capabilities = capabilities,
 }
 
 -- AutoPairs

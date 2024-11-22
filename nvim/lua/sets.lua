@@ -32,9 +32,6 @@ set.pumheight = 22
 
 set.termguicolors = true
 
-set.tabstop = 4
-set.shiftwidth = 4
-set.softtabstop = 4
 set.expandtab = true
 
 set.gcr = "a:block-blinkon0"
@@ -72,17 +69,51 @@ vim.api.nvim_create_autocmd('Filetype', {
   pattern = '*',
   callback = function()
       local filetype = vim.bo.filetype
-      local linewidths = {
-        python    = "80",
-        gitcommit = "80",
-        markdown  = "80",
-        c         = "100",
-        cpp       = "100",
-        rust      = "100",
+      local sets = {
+        python = {
+          width = "80",
+          tab = 4,
+        },
+        gitcommit = {
+          width = "80",
+          tab = 4,
+        },
+        markdown = {
+          width = "80",
+          tab = 4,
+        },
+        c = {
+          width = "100",
+          tab = 4,
+        },
+        cpp = {
+          width = "100",
+          tab = 4,
+        },
+        rust = {
+          width = "100",
+          tab = 4,
+        },
+        lua = {
+          width = "100",
+          tab = 2,
+        },
+        ocaml = {
+          width = "100",
+          tab = 2,
+        },
       }
 
-      if linewidths[filetype] then
-        set.colorcolumn = linewidths[filetype]
+      if sets[filetype] then
+        set.colorcolumn = sets[filetype].width
+        set.tabstop = sets[filetype].tab
+        set.shiftwidth = sets[filetype].tab
+        set.softtabstop = sets[filetype].tab
+      else
+        set.colorcolumn = "100"
+        set.tabstop = 4
+        set.shiftwidth = 4
+        set.softtabstop = 4
       end
   end
 })
