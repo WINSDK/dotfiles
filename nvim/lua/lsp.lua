@@ -144,7 +144,7 @@ server.rust_analyzer.setup {
         allTargets = false
       },
       procMacro = {
-        enable = false
+        enable = true
       },
       diagnostics = {
         disabled = {"inactive-code", "unresolved-proc-macro", "mismatched-arg-count"},
