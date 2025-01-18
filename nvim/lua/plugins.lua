@@ -69,15 +69,40 @@ local plugins = {
   },
   
   -- Navigation
-{
-  "junegunn/fzf", build = "./install --bin" },
+  {
+    "junegunn/fzf",
+    build = "./install --bin"
+  },
   'junegunn/fzf.vim',
   'tpope/vim-fugitive',
   'windwp/nvim-autopairs',
+  'tpope/vim-commentary',
   
   -- View
   'airblade/vim-gitgutter',
   'nvim-lua/lsp-status.nvim',
+  {
+    "kawre/leetcode.nvim",
+    -- build = ":TSUpdate html", -- if you have `nvim-treesitter` installed
+    dependencies = {
+      "nvim-telescope/telescope.nvim",
+      -- "ibhagwan/fzf-lua",
+      "nvim-lua/plenary.nvim",
+      "MunifTanjim/nui.nvim",
+    },
+    opts = {
+      lang = "python3",
+      picker = "fzf-lua",
+      theme = {
+        ["alt"] = {
+          -- bg = "#222222",
+        },
+        ["normal"] = {
+          fg = "#FFFFFF",
+        },
+      },
+    },
+  }
 }
 
 require('lazy').setup(plugins)

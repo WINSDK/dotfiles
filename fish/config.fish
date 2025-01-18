@@ -1,22 +1,48 @@
 bind \e accept-autosuggestion
 
-abbr -a lldb "rust-lldb"
-abbr -a gdb "rust-gdb"
+# How to setup git:
+#
+# cat <<EOF >> ~/.gitignore_global
+# .DS_Store
+# .DS_Store?
+# ._*
+# .Spotlight-V100
+# .Trashes
+# 
+# *.bak
+# *.swp
+# *.swo
+# *~
+# *#
+# 
+# .vscode
+# .idea
+# .iml
+# *.sublime-workspace
+# EOF
+#
+# opam install patdiff
+#
+# git config --global user.email "nicolasmazzon549@gmail.com"
+# git config --global user.name "Nicolas Mazzon"
+# 
+# git config --global core.editor "nvim"
+# git config --global core.excludesfile "~/.gitignore_global"
+# 
+# git config --global pull.rebase true
+# 
+# git config --global diff.algorithm "patience"
+# git config --global diff.external $(command -v patdiff-git-wrapper)
+
 abbr -a objdump "objdump -M intel -C"
+abbr -a cat "bat"
+abbr -a hexdump "hexdump -C"
 
-if command -q bat
-    abbr -a cat "bat"
-end
-
-if command -q hexdump
-    abbr -a hexdump "hexdump -C"
-end
-
-if command -q exa
-    abbr -a l "exa -T -L 2"
-    abbr -a ls "exa"
-    abbr -a ll "exa -aghHl"
-end
+abbr -a l "exa -T -L 2"
+abbr -a ls "exa"
+abbr -a ll "exa -aghHl"
+abbr -a ubuntu "ssh admin@(tart ip ubuntu)"
+abbr -a ninja "/Applications/'Binary Ninja.app'/Contents/MacOS/binaryninja"
 
 if command -q tree && command -q rg
     abbr -a tree "rg --files | tree --fromfile"
@@ -25,7 +51,7 @@ end
 switch (uname)
     case Darwin
         set -U fish_user_paths /opt/homebrew/bin/ $fish_user_paths
-        abbr -a make "bear -- make -j$(math $(sysctl -n hw.physicalcpu) + 1)"
+        abbr -a make "make -j$(math $(sysctl -n hw.physicalcpu) + 1)"
         abbr -a jupyter "jupyter lab --app-dir /opt/homebrew/share/jupyter/lab"
 
         if command -q aria2c

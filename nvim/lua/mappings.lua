@@ -50,3 +50,4 @@ nnoremap("<F8>", function() require("runner").clean() end)
 -- Best keymaps in vim
 nnoremap("<Tab>", "<Cmd>Files<CR>")
 inoremap("jj", "<Esc>")
+nnoremap("`", vim.lsp.buf.hover)
