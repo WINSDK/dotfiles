@@ -13,6 +13,45 @@ end
 
 vim.opt.rtp:prepend(lazypath)
 
+-- Recursively walk tree to check if we're in a node that *doesn't* require autocomplete.
+local function no_autocomplete_required()
+  local excluded_types = {
+    string = true,
+    string_content = true,
+    quoted_string_content = true,
+    comment = true,
+    line_comment = true,
+    block_comment = true
+  }
+
+  local node = require('nvim-treesitter.ts_utils').get_node_at_cursor(0, true)
+  if not node then return false end
+  while node do
+    local ntype = node:type()
+    if excluded_types[ntype] then
+      return true
+    end
+    node = node:parent()
+  end
+  return false
+end
+
+function transform_lsp_items(_, items)
+  -- Truly awful hack that disables autocompletion when treesitter
+  -- realizes we're in a comment or string. For some reason ocaml and a couple
+  -- other languages will autocomplete even when it makes no sense. 
+  if no_autocomplete_required() then
+    return {}
+  end 
+
+  -- Snippet support was removed here
+
+  return vim.tbl_filter(
+    function(item) return item.kind ~= require('blink.cmp.types').CompletionItemKind.Text end,
+    items
+  )
+end
+
 local plugins = {
   {
     "nvim-treesitter/nvim-treesitter", -- Code highlighting.
@@ -54,6 +93,7 @@ local plugins = {
   {
     "saghen/blink.cmp", -- LSP completion and documentation.
     dependencies = { "neovim/nvim-lspconfig" },
+    version = "*",
     opts = {
       keymap = {
         preset = "none",
@@ -111,7 +151,8 @@ local plugins = {
       },
       sources = {
         default = { "lsp", "path" },
-        cmdline = {}
+        cmdline = {},
+        providers = { lsp = { transform_items = transform_lsp_items } }
       },
     },
   },
