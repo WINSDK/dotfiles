@@ -64,13 +64,12 @@ local plugins = {
       completion = {
         menu = {
           draw = {
-            columns = { { "label", gap = 1, "kind" } },
+            columns = { { "label" }, { "kind" } },
             components = {
               kind = {
                 text = function(ctx)
                   return ctx.kind:sub(1, 1)
                 end,
-                width = { fill = false }
               },
               label = {
                 width = { fill = true, max = 30 },
@@ -159,10 +158,10 @@ local plugins = {
       lsp_status.config({
         status_symbol = '',
         current_function = false,
-        indicator_errors = 'ERRO',
-        indicator_warnings = 'WARN',
-        indicator_info = 'INFO',
-        indicator_hint = 'HINT',
+        indicator_errors = '%#DiagnosticError#E%*',
+        indicator_warnings = '%#DiagnosticWarn#W%*',
+        indicator_info = '%#DiagnosticInfo#i%*',
+        indicator_hint = '%#DiagnosticHint#?%*',
         indicator_ok = '',
       })
 

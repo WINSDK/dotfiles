@@ -48,6 +48,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
   group = vim.api.nvim_create_augroup("UserLspConfig", {}),
   callback = function(ev)
     nnoremap("~",  vim.diagnostic.open_float)
+    nnoremap("`",  vim.lsp.buf.hover)
     nnoremap("gd", vim.lsp.buf.definition)
     nnoremap("gi", vim.lsp.buf.implementation)
     nnoremap("gt", vim.lsp.buf.type_definition)
