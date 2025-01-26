@@ -22,21 +22,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
   end,
 })
 
--- Status bar on bottom (lsp progress)
 local server = require('lspconfig')
-local on_attach = function(client, bufnr)
-  statusline.on_attach(client)
-end
-
--- Lsp front-end helper functions
-local has_words_before = function()
-  local line, col = unpack(vim.api.nvim_win_get_cursor(0))
-  return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
-end
-
-local feedkey = function(key, mode)
-  vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes(key, true, true, true), mode, true)
-end
 
 local symbol_map = {
   Text = "TEXT",
@@ -75,32 +61,11 @@ cmp.setup {
       return vim_item
     end
   },
-  mapping = {
-      ['<CR>'] = cmp.mapping.confirm({ select = true }),
-      ["<Tab>"] = cmp.mapping(function(fallback)
-        if cmp.visible() then
-          cmp.select_next_item()
-        elseif vim.fn["vsnip#available"](1) == 1 then
-          feedkey("<Plug>(vsnip-expand-or-jump)", "")
-        elseif has_words_before() then
-          cmp.complete()
-        else
-          fallback()
-        end
-      end, { "i", "s" }),
-      ["<S-Tab>"] = cmp.mapping(function()
-        if cmp.visible() then
-          cmp.select_prev_item()
-        elseif vim.fn["vsnip#jumpable"](-1) == 1 then
-          feedkey("<Plug>(vsnip-jump-prev)", "")
-        end
-      end, { "i", "s" }),
-  },
-  snippet = {
-    expand = function(args)
-      vim.fn["vsnip#anonymous"](args.body)
-    end,
-  },
+  mapping = cmp.mapping.preset.insert({
+    ["<Tab>"] = cmp.mapping.select_next_item(),
+    ["<S-Tab>"] = cmp.mapping.select_prev_item(),
+    ["<CR>"] = cmp.mapping.confirm({ select = true })
+  }),
   completion = {
     completeopt = 'menu,menuone,noinsert'
   },
@@ -114,64 +79,46 @@ cmp.setup {
 local capabilities = require('cmp_nvim_lsp').default_capabilities()
 local capabilities = vim.tbl_extend('keep', capabilities or {}, statusline.capabilities)
 
-if vim.fn.executable('pyright') == 0 then
-    print("pyright not found")
-end
-
-server.pyright.setup {
-    on_attach = on_attach,
-    capabilities = capabilities,
-}
-
-if vim.fn.executable('rust-analyzer') == 0 then
-    print("rust-analyzer not found")
-    print("`rustup component add rust-analyzer`")
-end
-
--- Rust analyzer LSP
-server.rust_analyzer.setup {
-  on_attach = on_attach,
-  capabilities = capabilities,
-  settings = {
-    ["rust-analyzer"] = {
-      cargo = {
-        buildScripts = {
+local servers = {
+  rust_analyzer = {
+    settings = {
+      ["rust-analyzer"] = {
+        cargo = {
+          buildScripts = {
+            enable = true
+          },
+          loadOutDirsFromCheck = true
+        },
+        checkOnSave = {
+          allTargets = false
+        },
+        procMacro = {
           enable = true
         },
-        loadOutDirsFromCheck = true
-      },
-      checkOnSave = {
-        allTargets = false
-      },
-      procMacro = {
-        enable = true
-      },
-      diagnostics = {
-        disabled = {"inactive-code", "unresolved-proc-macro", "mismatched-arg-count"},
-        enableExperimental = true
+        diagnostics = {
+          disabled = {"inactive-code", "unresolved-proc-macro", "mismatched-arg-count"},
+          enableExperimental = true
+        }
       }
     }
-  }
+  },
+  clangd = {
+    root_dir = function()
+      return vim.fs.dirname(vim.fs.find({"compile_commands.json", ".git"}, { upward = true })[1])
+    end
+  },
+  ocamllsp = {},
+  pyright = {},
 }
 
-if vim.fn.executable('rust-analyzer') == 0 then
-  print("clangd not found")
-end
-
--- Clangd LSP
-server.clangd.setup {
-  on_attach = on_attach,
-  capabilities = capabilities,
-  root_dir = function()
-    return vim.fs.dirname(vim.fs.find({"compile_commands.json", ".git"}, { upward = true })[1])
+for name, config in pairs(servers) do
+  local cmd = server[name].document_config.default_config.cmd[1]
+  if vim.fn.executable(cmd) == 1 then
+    server[name].on_attach = statusline.on_attach
+    server[name].capabilities = capabilities
+    server[name].setup(config)
   end
-}
-
--- Occaml LSP
-server.ocamllsp.setup {
-  on_attach = on_attach,
-  capabilities = capabilities,
-}
+end
 
 -- AutoPairs
 require("nvim-autopairs").setup {

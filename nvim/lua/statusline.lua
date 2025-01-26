@@ -3,10 +3,10 @@ local lsp_status = require('lsp-status')
 lsp_status.config({
   status_symbol = '',
   current_function = false,
-  indicator_errors = '',
-  indicator_warnings = '',
-  indicator_info = '',
-  indicator_hint = '',
+  indicator_errors = 'ERRO',
+  indicator_warnings = 'WARN',
+  indicator_info = 'INFO',
+  indicator_hint = 'HINT',
   indicator_ok = '',
 })
 
