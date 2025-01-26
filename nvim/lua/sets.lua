@@ -1,7 +1,7 @@
 local set = vim.opt
 
 set.syntax = "enable"
-set.mouse = 'a'
+set.mouse = "a"
 set.relativenumber = true
 set.number = true
 set.encoding = "utf-8"
@@ -17,7 +17,6 @@ set.shortmess:append("c")
 set.laststatus = 3
 
 set.cmdheight = 1
-set.guifont = "Hack Nerd Font:h15"
 
 set.autoindent = true
 set.smartindent = true
@@ -54,78 +53,45 @@ vim.g.netrw_browse_split = 0
 vim.g.netrw_banner = 0
 vim.g.netrw_winsize = 25
 
-vim.g.completion_matching_strategy_list = { 'exact', 'substring', 'fuzzy' }
+vim.g.completion_matching_strategy_list = { "exact", "substring", "fuzzy" }
 vim.g.mapleader = " "
 
 -- Set filetype to cpp for .metal files
-vim.api.nvim_create_autocmd({'BufRead', 'BufNewFile'}, {
-  pattern = '*.metal',
+vim.api.nvim_create_autocmd({"BufRead", "BufNewFile"}, {
+  pattern = "*.metal",
   callback = function()
-    vim.bo.filetype = 'cpp'
+    vim.bo.filetype = "cpp"
   end
 })
 
-vim.api.nvim_create_autocmd('Filetype', {
-  pattern = '*',
+vim.api.nvim_create_autocmd("Filetype", {
+  pattern = "*",
   callback = function()
-      local filetype = vim.bo.filetype
-      local sets = {
-        python = {
-          width = "80",
-          tab = 4,
-        },
-        gitcommit = {
-          width = "80",
-          tab = 4,
-        },
-        markdown = {
-          width = "80",
-          tab = 4,
-        },
-        c = {
-          width = "100",
-          tab = 4,
-        },
-        cpp = {
-          width = "100",
-          tab = 4,
-        },
-        rust = {
-          width = "100",
-          tab = 4,
-        },
-        lua = {
-          width = "100",
-          tab = 2,
-        },
-        ocaml = {
-          width = "100",
-          tab = 2,
-        },
-        dune = {
-          width = "100",
-          tab = 1,
-        },
-        css = {
-          width = "80",
-          tab = 2,
-        },
-        html = {
-          width = "80",
-          tab = 1,
-        },
-      }
+    local filetype = vim.bo.filetype
+    local sets = {
+      python = { width = "80", tab = 4 },
+      gitcommit = { width = "80", tab = 4 },
+      markdown = { width = "80", tab = 4 },
+      c = { width = "100", tab = 4 },
+      cpp = { width = "100", tab = 4 },
+      rust = { width = "100", tab = 4 },
+      lua = { width = "100", tab = 2 },
+      ocaml = { width = "100", tab = 2 },
+      dune = { width = "100", tab = 1 },
+      css = { width = "80", tab = 2 },
+      html = { width = "80", tab = 1 },
+    }
 
-      if sets[filetype] then
-        set.colorcolumn = sets[filetype].width
-        set.tabstop = sets[filetype].tab
-        set.shiftwidth = sets[filetype].tab
-        set.softtabstop = sets[filetype].tab
-      else
-        set.colorcolumn = "100"
-        set.tabstop = 4
-        set.shiftwidth = 4
-        set.softtabstop = 4
-      end
-  end
+    if sets[filetype] then
+      vim.opt.colorcolumn = sets[filetype].width
+      vim.opt.tabstop = sets[filetype].tab
+      vim.opt.shiftwidth = sets[filetype].tab
+      vim.opt.softtabstop = sets[filetype].tab
+    else
+      vim.opt.colorcolumn = "100"
+      vim.opt.tabstop = 4
+      vim.opt.shiftwidth = 4
+      vim.opt.softtabstop = 4
+    end
+  end,
 })
