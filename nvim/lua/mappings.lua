@@ -23,6 +23,12 @@ vim.api.nvim_create_user_command(
   {}
 )
 
+vim.api.nvim_create_user_command(
+  "Code",
+  function (...) vim.lsp.buf.code_action() end,
+  {}
+)
+
 -- Ignore :W command
 vim.api.nvim_create_user_command("W", "w", { nargs = "*" })
 

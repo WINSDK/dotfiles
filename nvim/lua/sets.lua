@@ -18,7 +18,7 @@ set.laststatus = 3
 
 set.cmdheight = 1
 
-set.autoindent = true
+set.autoindent = false
 set.smartindent = true
 set.lazyredraw = true
 
@@ -39,15 +39,9 @@ set.timeoutlen = 300
 
 set.guicursor = "n-v-c:block"
 set.inccommand = "nosplit"
-
-vim.g.gruvbox_material_palette = "mix"
-vim.g.gruvbox_material_sign_column_background = "none"
-vim.g.gruvbox_material_disable_italic_comment = 1
-vim.g.gruvbox_material_better_performance = 1
-vim.g.gruvbox_material_diagnostic_virtual_text = "colored"
 set.background = "dark"
 
-vim.cmd.colorscheme("gruvbox-material")
+vim.cmd.colorscheme("modus")
 
 vim.g.netrw_browse_split = 0
 vim.g.netrw_banner = 0
@@ -56,13 +50,12 @@ vim.g.netrw_winsize = 25
 vim.g.completion_matching_strategy_list = { "exact", "substring", "fuzzy" }
 vim.g.mapleader = " "
 
--- Set filetype to cpp for .metal files
-vim.api.nvim_create_autocmd({"BufRead", "BufNewFile"}, {
-  pattern = "*.metal",
-  callback = function()
-    vim.bo.filetype = "cpp"
-  end
-})
+vim.filetype.add {
+  extension = {
+    metal = "cpp",
+    re = "reason"
+  },
+}
 
 vim.api.nvim_create_autocmd("Filetype", {
   pattern = "*",
@@ -77,9 +70,11 @@ vim.api.nvim_create_autocmd("Filetype", {
       rust = { width = "100", tab = 4 },
       lua = { width = "100", tab = 2 },
       ocaml = { width = "100", tab = 2 },
+      reason = { width = "80", tab = 2 },
+      haskell = { width = "80", tab = 2 },
       dune = { width = "100", tab = 1 },
       css = { width = "80", tab = 2 },
-      html = { width = "80", tab = 1 },
+      html = { width = "80", tab = 2 },
     }
 
     if sets[filetype] then

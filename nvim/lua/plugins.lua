@@ -1,4 +1,4 @@
-local lazypath = vim.fn.stdpath "data" .. "/lazy/lazy.nvim"
+local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 
 if not vim.loop.fs_stat(lazypath) then
   vim.fn.system {
@@ -14,47 +14,45 @@ end
 vim.opt.rtp:prepend(lazypath)
 
 -- Recursively walk tree to check if we're in a node that *doesn't* require autocomplete.
-local function no_autocomplete_required()
+local function autocomplete_required()
   local excluded_types = {
-    string = true,
-    string_content = true,
-    quoted_string_content = true,
-    comment = true,
-    line_comment = true,
-    block_comment = true
+    "string",
+    "string_content",
+    "quoted_string_content",
+    "comment",
+    "line_comment",
+    "block_comment",
   }
 
   local node = require('nvim-treesitter.ts_utils').get_node_at_cursor(0, true)
   if not node then return false end
   while node do
     local ntype = node:type()
-    if excluded_types[ntype] then
-      return true
+    if vim.tbl_contains(excluded_types, ntype) then
+      return false
     end
     node = node:parent()
   end
-  return false
+  return true
 end
 
-function transform_lsp_items(_, items)
-  -- Truly awful hack that disables autocompletion when treesitter
-  -- realizes we're in a comment or string. For some reason ocaml and a couple
-  -- other languages will autocomplete even when it makes no sense. 
-  if no_autocomplete_required() then
-    return {}
-  end 
-
-  -- Snippet support was removed here
-
+function transform_lsp_items(a, items)
+  local kinds = require('blink.cmp.types').CompletionItemKind
+  local keyword = a.get_keyword()
+  local filter = { kinds.Text, kinds.Keyword }
   return vim.tbl_filter(
-    function(item) return item.kind ~= require('blink.cmp.types').CompletionItemKind.Text end,
+    function(item)
+      return not vim.tbl_contains(filter, item.kind)
+    end,
     items
   )
 end
 
 local plugins = {
+  "danielo515/nvim-treesitter-reason",
   {
     "nvim-treesitter/nvim-treesitter", -- Code highlighting.
+    dependencies = { "danielo515/nvim-treesitter-reason" },
     build = ":TSUpdate",
     config = function()
       local configs = require("nvim-treesitter.configs")
@@ -78,7 +76,9 @@ local plugins = {
           "cpp",
           "lua",
           "rust",
-          "ocaml"
+          "ocaml",
+          "haskell",
+          "reason",
         },
         sync_install = false,
         highlight = {
@@ -135,10 +135,10 @@ local plugins = {
                 end
               }
             }
-          }
+          },
         },
         documentation = {
-          auto_show = true,
+          auto_show = false,
           auto_show_delay_ms = 50,
           update_delay_ms = 50,
           window = {
@@ -149,10 +149,28 @@ local plugins = {
           }
         }
       },
+      cmdline = {
+        enabled = false
+      },
       sources = {
         default = { "lsp", "path" },
-        cmdline = {},
-        providers = { lsp = { transform_items = transform_lsp_items } }
+        providers = {
+          lsp = {
+            transform_items = transform_lsp_items,
+            should_show_items = function (ctx)
+              -- More hacks to not show autocompletion on common keywords.
+              -- Don't know why this doesn't already exist in blink.cmp
+              local filter = { "while", "then", "if", "let", "type", "in", "with" }
+              if vim.tbl_contains(filter, ctx.get_keyword()) then
+                return false
+              end 
+              -- Truly awful hack that disables autocompletion when treesitter
+              -- realizes we're in a comment or string. For some reason ocaml and a couple
+              -- other languages will autocomplete even when it makes no sense. 
+              return autocomplete_required()
+            end,
+          }
+        }
       },
     },
   },
@@ -189,8 +207,9 @@ local plugins = {
             return vim.fs.dirname(path)
           end
         },
+        ruff = {},
         ocamllsp = {},
-        pyright = {},
+        hls = {},
       }
     },
     config = function(_, opts)
@@ -224,7 +243,6 @@ local plugins = {
       for server, config in pairs(opts.servers) do
         local capabilities = blink.get_lsp_capabilities(config.capabilities)
         local capabilities = vim.tbl_extend("keep", capabilities or {}, lsp_status.capabilities)
-
         config.capabilities = capabilities
         lspconfig[server].setup(config)
       end
@@ -283,7 +301,21 @@ local plugins = {
       },
     },
   },
-  "sainnhe/gruvbox-material", -- Colortheme.
+  {
+    "WINSDK/modus-themes.nvim",
+    priority = 1000,
+    config = function()
+      require("modus-themes").setup {
+        line_nr_column_background = false,
+        styles = {
+          comments = { italic = false },
+          keywords = { italic = false },
+          functions = {},
+          variables = {},
+        }
+      }
+    end
+  },
   "nvim-lua/lsp-status.nvim", -- Status bar.
   "tpope/vim-fugitive", -- Mainly for :Gdiff.
   "tpope/vim-commentary", -- Comment stuff out.
