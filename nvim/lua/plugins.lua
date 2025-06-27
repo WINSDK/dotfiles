@@ -24,7 +24,7 @@ local function autocomplete_required()
     "block_comment",
   }
 
-  local node = require('nvim-treesitter.ts_utils').get_node_at_cursor(0, true)
+  local node = require("nvim-treesitter.ts_utils").get_node_at_cursor(0, true)
   if not node then return false end
   while node do
     local ntype = node:type()
@@ -37,7 +37,7 @@ local function autocomplete_required()
 end
 
 function transform_lsp_items(a, items)
-  local kinds = require('blink.cmp.types').CompletionItemKind
+  local kinds = require("blink.cmp.types").CompletionItemKind
   local keyword = a.get_keyword()
   local filter = { kinds.Text, kinds.Keyword }
   return vim.tbl_filter(
@@ -82,9 +82,13 @@ local plugins = {
         },
         sync_install = false,
         highlight = {
-          enable = true
+          enable = true,
+          additional_vim_regex_highlighting = true,
         },
         autotag = {
+          enable = true
+        },
+        indent = {
           enable = true
         }
       })
@@ -116,19 +120,19 @@ local plugins = {
                 highlight = function(ctx)
                   -- label and label details
                   local highlights = {
-                    { 0, #ctx.label, group = 'BlinkCmpLabel' },
+                    { 0, #ctx.label, group = "BlinkCmpLabel" },
                   }
                   if ctx.label_detail then
                     table.insert(highlights, {
                       #ctx.label,
                       #ctx.label + #ctx.label_detail,
-                      group = 'BlinkCmpLabel'
+                      group = "BlinkCmpLabel"
                    })
                   end
 
                   -- characters matched on the label by the fuzzy matcher
                   for _, idx in ipairs(ctx.label_matched_indices) do
-                    table.insert(highlights, { idx, idx + 1, group = 'BlinkCmpLabelMatch' })
+                    table.insert(highlights, { idx, idx + 1, group = "BlinkCmpLabelMatch" })
                   end
 
                   return highlights
@@ -202,27 +206,38 @@ local plugins = {
           }
         },
         clangd = {
+          cmd = {
+            "clangd",
+            "--background-index",
+            "--clang-tidy",
+          },
+          -- https://clangd.llvm.org/installation#neovim-built-in-lsp-client
+          init_options = {
+            fallbackFlags = { "-std=c++23", "-fexperimental-library", "-stdlib=libc++" },
+            IndentWidth
+          },
           root_dir = function()
             local path = vim.fs.find({"compile_commands.json", ".git"}, { upward = true })[1]
             return vim.fs.dirname(path)
           end
         },
         ruff = {},
+        pyright = {},
         ocamllsp = {},
         hls = {},
       }
     },
     config = function(_, opts)
-      local lsp_status = require('lsp-status')
+      local lsp_status = require("lsp-status")
 
       lsp_status.config({
-        status_symbol = '',
+        status_symbol = "",
         current_function = false,
-        indicator_errors = '%#DiagnosticError#E%*',
-        indicator_warnings = '%#DiagnosticWarn#W%*',
-        indicator_info = '%#DiagnosticInfo#i%*',
-        indicator_hint = '%#DiagnosticHint#?%*',
-        indicator_ok = '',
+        indicator_errors = "%#DiagnosticError#E%*",
+        indicator_warnings = "%#DiagnosticWarn#W%*",
+        indicator_info = "%#DiagnosticInfo#i%*",
+        indicator_hint = "%#DiagnosticHint#?%*",
+        indicator_ok = "",
       })
 
       lsp_status.register_progress()
@@ -231,7 +246,6 @@ local plugins = {
         if #vim.lsp.buf_get_clients() > 0 then
           return lsp_status.status()
         end
-
         return ""
       end
 
@@ -279,27 +293,6 @@ local plugins = {
     config = function()
       require("nvim-autopairs").setup { check_ts = true }
     end
-  },
-  { 
-    "kawre/leetcode.nvim", -- Pain.
-    lazy = true,
-    dependencies = {
-      "nvim-telescope/telescope.nvim",
-      "nvim-lua/plenary.nvim",
-      "MunifTanjim/nui.nvim",
-    },
-    opts = {
-      lang = "python3",
-      picker = "fzf-lua",
-      theme = {
-        ["alt"] = {
-          -- bg = "#222222",
-        },
-        ["normal"] = {
-          fg = "#FFFFFF",
-        },
-      },
-    },
   },
   {
     "WINSDK/modus-themes.nvim",

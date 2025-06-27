@@ -39,11 +39,28 @@ nnoremap("<Down>", function() end)
 nnoremap("<Left>", function() end)
 nnoremap("<Right>", function() end)
 
-nnoremap("<Leader>t", "<Cmd>terminal<CR>")
-nnoremap("<Leader>n", "<Cmd>bnext<CR>")
-nnoremap("<Leader>b", "<Cmd>bprev<CR>")
-nnoremap("<Leader>v", "<Cmd>bdelete<CR>")
+local function apply_action(title_or_prefix)
+  vim.lsp.buf.code_action({
+    apply  = true,
+    filter = function(action) -- match exact title or prefix
+      local t = vim.fn.trim(action.title)
+      return t == title_or_prefix or vim.startswith(t, title_or_prefix)
+    end,
+  })
+end
+
+nnoremap("<Leader>n", function()
+  local buf = vim.api.nvim_get_current_buf()
+  local filetype = vim.api.nvim_buf_get_option(buf, "filetype")
+  if filetype == "c" or filetype == "cpp" then
+    vim.cmd("ClangdSwitchSourceHeader")
+  else
+    apply_action('Open ')
+  end
+end)
+nnoremap("<Leader>b", "<Cmd>Buffers<CR>")
 nnoremap("<Leader>c", "<Cmd>Rg<CR>")
+nnoremap("<Leader>f", vim.lsp.buf.format)
 nnoremap("<Leader>r", vim.lsp.buf.rename)
 
 -- Best keymaps in vim

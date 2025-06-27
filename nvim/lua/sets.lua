@@ -60,13 +60,14 @@ vim.filetype.add {
 vim.api.nvim_create_autocmd("Filetype", {
   pattern = "*",
   callback = function()
-    local filetype = vim.bo.filetype
+    local buf = vim.api.nvim_get_current_buf()
+    local filetype = vim.api.nvim_buf_get_option(buf, "filetype")
     local sets = {
       python = { width = "80", tab = 4 },
       gitcommit = { width = "80", tab = 4 },
-      markdown = { width = "80", tab = 4 },
-      c = { width = "100", tab = 4 },
-      cpp = { width = "100", tab = 4 },
+      markdown = { width = "80", tab = 2 },
+      c = { width = "100", tab = 2 },
+      cpp = { width = "100", tab = 2 },
       rust = { width = "100", tab = 4 },
       lua = { width = "100", tab = 2 },
       ocaml = { width = "100", tab = 2 },
