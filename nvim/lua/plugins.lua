@@ -89,7 +89,7 @@ local plugins = {
           enable = true
         },
         indent = {
-          enable = true
+          enable = false
         }
       })
     end

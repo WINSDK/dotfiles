@@ -12,13 +12,20 @@ vim.api.nvim_create_user_command(
 vim.api.nvim_create_user_command(
   "Format",
   function(...)
-      if vim.bo.filetype == "python" then
-        if vim.fn.executable("autopep8") == 1 then
-          vim.cmd("!autopep8 % --in-place")
-        end
-      else
-        vim.lsp.buf.format({ async = true })
+    local buf = vim.api.nvim_get_current_buf()
+    local filetype = vim.api.nvim_buf_get_option(buf, "filetype")
+
+    if filetype == "python" then
+      if vim.fn.executable("autopep8") == 1 then
+        vim.cmd("!autopep8 % --in-place")
       end
+    elseif filetype == "ocaml" then
+      if vim.fn.executable("dune") == 1 then
+        vim.cmd("!dune fmt > /dev/null 2>&1")
+      end
+    else
+      vim.lsp.buf.format({ async = true })
+    end
   end,
   {}
 )
@@ -75,8 +82,6 @@ vim.api.nvim_create_autocmd("LspAttach", {
     nnoremap("gd", vim.lsp.buf.definition)
     nnoremap("gi", vim.lsp.buf.implementation)
     nnoremap("gt", vim.lsp.buf.type_definition)
-    nnoremap("gs", vim.lsp.buf.document_symbol)
-    nnoremap("ge", vim.lsp.buf.declaration)
-    nnoremap("gj", vim.lsp.buf.code_action)
+    nnoremap("gr", vim.lsp.buf.references)
   end,
 })

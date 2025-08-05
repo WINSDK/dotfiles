@@ -23,8 +23,6 @@ if exists("*GetOcpIndent")
  finish
 endif
 
-echom "Loading indent.vim"
-
 " Indents are cached for the current buffer; they are only re-used when
 " indenting lines in sequence and the buffer was unchanged.
 let s:indents = []

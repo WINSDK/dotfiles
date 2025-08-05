@@ -1,12 +1,8 @@
 local set = vim.opt
 
-set.syntax = "enable"
 set.mouse = "a"
 set.relativenumber = true
 set.number = true
-set.encoding = "utf-8"
-set.history = 500
-set.backspace = "indent,eol,start"
 set.spell = true
 
 set.synmaxcol = 500
@@ -18,28 +14,23 @@ set.laststatus = 3
 
 set.cmdheight = 1
 
-set.autoindent = false
+set.autoindent = true
 set.smartindent = true
-set.lazyredraw = true
 
+set.lazyredraw = true
 set.ignorecase = true
 set.smartcase = true
-set.incsearch = true
-set.hlsearch = true
 set.scrolloff = 2
 set.pumheight = 22
 
-set.termguicolors = true
-
 set.expandtab = true
 
-set.gcr = "a:block-blinkon0"
+set.termguicolors = true
 set.updatetime = 1000
 set.timeoutlen = 300
-
-set.guicursor = "n-v-c:block"
-set.inccommand = "nosplit"
+set.guicursor = "a:block-blinkon0"
 set.background = "dark"
+set.winborder = "bold"
 
 vim.cmd.colorscheme("modus")
 
@@ -79,15 +70,17 @@ vim.api.nvim_create_autocmd("Filetype", {
     }
 
     if sets[filetype] then
-      vim.opt.colorcolumn = sets[filetype].width
-      vim.opt.tabstop = sets[filetype].tab
-      vim.opt.shiftwidth = sets[filetype].tab
-      vim.opt.softtabstop = sets[filetype].tab
+      set.colorcolumn = sets[filetype].width
+
+      vim.bo[buf].tabstop     = sets[filetype].tab
+      vim.bo[buf].shiftwidth  = sets[filetype].tab
+      vim.bo[buf].softtabstop = sets[filetype].tab
     else
-      vim.opt.colorcolumn = "100"
-      vim.opt.tabstop = 4
-      vim.opt.shiftwidth = 4
-      vim.opt.softtabstop = 4
+      set.colorcolumn = "100"
+
+      vim.bo[buf].tabstop     = 4
+      vim.bo[buf].shiftwidth  = 4
+      vim.bo[buf].softtabstop = 4
     end
   end,
 })
