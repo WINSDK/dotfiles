@@ -291,7 +291,7 @@ local plugins = {
   {
     "windwp/nvim-autopairs", -- Auto close brackets.
     config = function()
-      require("nvim-autopairs").setup { check_ts = true }
+    require("nvim-autopairs").setup { check_ts = true }
     end
   },
   {

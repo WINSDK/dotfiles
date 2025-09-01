@@ -32,11 +32,12 @@ bind \e accept-autosuggestion
 # git config --global pull.rebase true
 # 
 # git config --global diff.algorithm "patience"
-# git config --global diff.external $(command -v patdiff-git-wrapper)
+# git config --global diff.external patdiff-git-wrapper
 
 abbr -a objdump "objdump -M intel -C"
 abbr -a cat "bat"
 abbr -a hexdump "hexdump -C"
+abbr -a tree "tree --gitignore"
 
 abbr -a l "exa -T -L 2"
 abbr -a ls "exa"
@@ -55,7 +56,7 @@ switch (uname)
         abbr -a jupyter "jupyter lab --app-dir /opt/homebrew/share/jupyter/lab"
 
         if command -q aria2c
-            abbr -a aria2c "aria2c --enable-dht=true"
+            abbr -a aria2c "aria2c --enable-peer-exchange=true --enable-dht=true"
         end
     case Linux
         abbr -a make "make -j$(math $(nproc) + 1)"
@@ -70,7 +71,7 @@ switch (uname)
         export _JAVA_AWT_WM_NONREPARENTING="1"
 
         if command -q aria2c
-            abbr -a aria2c "aria2c --async-dns=false --enable-dht=true"
+            abbr -a aria2c "aria2c --async-dns=false --enable-peer-exchange=true --enable-dht=true"
         end
 end
 
@@ -98,17 +99,17 @@ setenv LESS_TERMCAP_ue \e'[0m'           # end underline
 setenv LESS_TERMCAP_us \e'[04;38;5;146m' # begin underline
 
 if status --is-interactive
-  if type -q base16-gruvbox-dark-medium
-    base16-gruvbox-dark-medium
+  if type -q modus-vivendi
+    modus-vivendi
   end
 end
 
 function fish_prompt
   set_color -o brwhite
   echo -n $USER
-  set_color red
+  set_color f0dd60
   echo -n " ::"
-  set_color yellow
+  set_color 4fafff
   if [ $PWD != $HOME ]
     echo -n " "(prompt_pwd)
   end
@@ -118,7 +119,7 @@ function fish_prompt
     echo -n "[$pipestatus]"
   end
 
-  set_color blue
+  set_color 4c82b0
   echo -en " » \e[2 q"
 end
 

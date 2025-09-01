@@ -30,7 +30,6 @@ set.updatetime = 1000
 set.timeoutlen = 300
 set.guicursor = "a:block-blinkon0"
 set.background = "dark"
-set.winborder = "bold"
 
 vim.cmd.colorscheme("modus")
 
@@ -40,6 +39,12 @@ vim.g.netrw_winsize = 25
 
 vim.g.completion_matching_strategy_list = { "exact", "substring", "fuzzy" }
 vim.g.mapleader = " "
+
+vim.diagnostic.config({
+  virtual_text = {},
+  signs = true,
+  severity_sort = true,
+})
 
 vim.filetype.add {
   extension = {
