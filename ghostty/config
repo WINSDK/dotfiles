@@ -1,0 +1,18 @@
+font-family = Menlo
+keybind = super+enter=new_tab
+keybind = super+backspace=new_tab
+keybind = super+t=unbind
+macos-titlebar-style = tabs
+
+theme = deep
+font-thicken = true
+window-colorspace = display-p3
+
+macos-non-native-fullscreen = true
+
+background = #000000
+foreground = #ffffff
+cursor-color = #ffffff
+cursor-text = #000000
+selection-background = #eeeeee
+selection-foreground = #000000
