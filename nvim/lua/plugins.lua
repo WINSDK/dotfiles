@@ -96,8 +96,7 @@ local plugins = {
   },
   {
     "saghen/blink.cmp", -- LSP completion and documentation.
-    dependencies = { "neovim/nvim-lspconfig" },
-    version = "*",
+    version = "1.*",
     opts = {
       keymap = {
         preset = "none",
@@ -180,7 +179,7 @@ local plugins = {
   },
   {
     "neovim/nvim-lspconfig", -- Different lsp configs.
-    dependencies = { "saghen/blink.cmp", "nvim-lua/lsp-status.nvim" },
+    dependencies = { "nvim-lua/lsp-status.nvim", "saghen/blink.cmp" },
     opts = {
       servers = {
         rust_analyzer = {
@@ -214,12 +213,12 @@ local plugins = {
           -- https://clangd.llvm.org/installation#neovim-built-in-lsp-client
           init_options = {
             fallbackFlags = { "-std=c++23", "-fexperimental-library", "-stdlib=libc++" },
-            IndentWidth
           },
-          root_dir = function()
-            local path = vim.fs.find({"compile_commands.json", ".git"}, { upward = true })[1]
-            return vim.fs.dirname(path)
-          end
+          -- Neovim v0.11 broke this
+          --root_dir = function()
+          --  local path = vim.fs.find({"compile_commands.json", ".git"}, { upward = true })[1]
+          --  return vim.fs.dirname(path)
+          --end
         },
         ruff = {},
         pyright = {},
@@ -251,14 +250,15 @@ local plugins = {
 
       vim.o.statusline = "%{%v:lua.show_lsp_status()%}"
 
-      local lspconfig = require("lspconfig")
       local blink = require("blink.cmp")
 
       for server, config in pairs(opts.servers) do
         local capabilities = blink.get_lsp_capabilities(config.capabilities)
         local capabilities = vim.tbl_extend("keep", capabilities or {}, lsp_status.capabilities)
         config.capabilities = capabilities
-        lspconfig[server].setup(config)
+
+        vim.lsp.config(server, config)
+        vim.lsp.enable(server)
       end
     end,
   },

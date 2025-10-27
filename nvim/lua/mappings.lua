@@ -3,6 +3,20 @@ local ops = { noremap = true, silent = true }
 local function nnoremap(key, com) vim.keymap.set("n", key, com, ops) end
 local function inoremap(key, com) vim.keymap.set("i", key, com, ops) end
 
+renamer = require("rename")
+
+vim.api.nvim_create_user_command(
+  "Move",
+  function(opts)
+    if #opts.fargs == 0 then
+      renamer.prompt_rename()
+    else
+      renamer.rename_file(opts.fargs[1])
+    end
+  end,
+  { nargs = "?", complete = "file" }
+)
+
 vim.api.nvim_create_user_command(
   "Rename",
   function (...) vim.lsp.buf.rename() end,
@@ -15,11 +29,7 @@ vim.api.nvim_create_user_command(
     local buf = vim.api.nvim_get_current_buf()
     local filetype = vim.api.nvim_buf_get_option(buf, "filetype")
 
-    if filetype == "python" then
-      if vim.fn.executable("autopep8") == 1 then
-        vim.cmd("!autopep8 % --in-place")
-      end
-    elseif filetype == "ocaml" then
+    if filetype == "ocaml" then
       if vim.fn.executable("dune") == 1 then
         vim.cmd("!dune fmt > /dev/null 2>&1")
       end
@@ -65,6 +75,7 @@ nnoremap("<Leader>n", function()
     apply_action('Open ')
   end
 end)
+nnoremap("<Leader>m", renamer.prompt_rename)
 nnoremap("<Leader>b", "<Cmd>Buffers<CR>")
 nnoremap("<Leader>c", "<Cmd>Rg<CR>")
 nnoremap("<Leader>f", vim.lsp.buf.format)
