@@ -1,5 +1,5 @@
 # Set alt as modifier
-set $mod super
+set $mod alt
 font Liga SFMono Nerd Font SemiBold 10
 
 # Autostarts
