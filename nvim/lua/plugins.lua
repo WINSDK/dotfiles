@@ -163,10 +163,11 @@ local plugins = {
             should_show_items = function (ctx)
               -- More hacks to not show autocompletion on common keywords.
               -- Don't know why this doesn't already exist in blink.cmp
-              local filter = { "while", "then", "if", "let", "type", "in", "with" }
-              if vim.tbl_contains(filter, ctx.get_keyword()) then
-                return false
-              end 
+              -- local filter = { "while", "then", "if", "let", "type", "in", "with" }
+              -- if vim.tbl_contains(filter, ctx.get_keyword()) then
+              --   return false
+              -- end 
+
               -- Truly awful hack that disables autocompletion when treesitter
               -- realizes we're in a comment or string. For some reason ocaml and a couple
               -- other languages will autocomplete even when it makes no sense. 
@@ -179,7 +180,7 @@ local plugins = {
   },
   {
     "neovim/nvim-lspconfig", -- Different lsp configs.
-    dependencies = { "nvim-lua/lsp-status.nvim", "saghen/blink.cmp" },
+    dependencies = { "WINSDK/lsp-status.nvim", "saghen/blink.cmp" },
     opts = {
       servers = {
         rust_analyzer = {
@@ -309,10 +310,36 @@ local plugins = {
       }
     end
   },
-  "nvim-lua/lsp-status.nvim", -- Status bar.
+  "WINSDK/lsp-status.nvim", -- Status bar.
   "tpope/vim-fugitive", -- Mainly for :Gdiff.
   "tpope/vim-commentary", -- Comment stuff out.
   "airblade/vim-gitgutter", -- git "+" and "-" on sidebar.
+  {
+    "julienvincent/hunk.nvim",
+    cmd = { "DiffEditor" },
+    config = function()
+      require("hunk").setup({
+        icons = {
+          selected           = "▍",
+          deselected         = "-",
+          partially_selected = "▎",
+
+          folder_open        = "▾",
+          folder_closed      = "▸",
+
+          expanded           = "▾",
+          collapsed          = "▸",
+        },
+        keys = {
+          diff = {
+            prev_hunk = { "<S-k>" },
+            next_hunk = { "<S-j>" },
+          },
+        },
+      })
+    end,
+    dependencies = { "MunifTanjim/nui.nvim" },
+  }
 }
 
 require("lazy").setup(plugins)
