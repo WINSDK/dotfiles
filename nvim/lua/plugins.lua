@@ -160,7 +160,7 @@ local plugins = {
         providers = {
           lsp = {
             transform_items = transform_lsp_items,
-            should_show_items = function (ctx)
+            should_show_items = function(ctx)
               -- More hacks to not show autocompletion on common keywords.
               -- Don't know why this doesn't already exist in blink.cmp
               -- local filter = { "while", "then", "if", "let", "type", "in", "with" }
@@ -222,7 +222,7 @@ local plugins = {
           --end
         },
         ruff = {},
-        pyright = {},
+        ty = {},
         ocamllsp = {},
         hls = {},
       }
@@ -339,7 +339,7 @@ local plugins = {
       })
     end,
     dependencies = { "MunifTanjim/nui.nvim" },
-  }
+  },
 }
 
 require("lazy").setup(plugins)

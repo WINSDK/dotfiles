@@ -72,6 +72,7 @@ vim.api.nvim_create_autocmd("Filetype", {
       dune = { width = "100", tab = 1 },
       css = { width = "80", tab = 2 },
       html = { width = "80", tab = 2 },
+      cmake = { width = "80", tab = 2 },
     }
 
     if sets[filetype] then
