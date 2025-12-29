@@ -210,16 +210,12 @@ local plugins = {
             "clangd",
             "--background-index",
             "--clang-tidy",
+            "--compile-commands-dir=build"
           },
           -- https://clangd.llvm.org/installation#neovim-built-in-lsp-client
           init_options = {
             fallbackFlags = { "-std=c++23", "-fexperimental-library", "-stdlib=libc++" },
           },
-          -- Neovim v0.11 broke this
-          --root_dir = function()
-          --  local path = vim.fs.find({"compile_commands.json", ".git"}, { upward = true })[1]
-          --  return vim.fs.dirname(path)
-          --end
         },
         ruff = {},
         ty = {},
