@@ -1,0 +1,34 @@
+#:schema https://jj-vcs.github.io/jj/latest/config-schema.json
+
+[ui]
+editor = "nvim"
+diff-editor = ["nvim", "-c", "DiffEditor $left $right $output"]
+
+[user]
+name = "Nicolas Mazzon"
+email = "nicolasmazzon549@gmail.com"
+
+[fix.tools.1-ruff-lint]
+command = ["uvx", "ruff", "check", "--fix", "--preview", "--quiet", "--stdin-filename=$path", "-"]
+patterns = ["glob:'**/*.py'"]
+
+[fix.tools.2-ruff-format]
+command = ["uvx", "ruff", "format", "--stdin-filename=$path", "-"]
+patterns = ["glob:'**/*.py'"]
+
+[fix.tools.3-clang-format]
+command = ["clang-format", "--assume-filename=$path"]
+patterns = [
+  "glob:'**/*.c'",
+  "glob:'**/*.cc'",
+  "glob:'**/*.cpp'",
+  "glob:'**/*.cppm'",
+  "glob:'**/*.h'",
+  "glob:'**/*.hpp'",
+  "glob:'**/*.ipp'",
+  "glob:'**/*.cu'",
+  "glob:'**/*.cuh'",
+]
+
+[aliases]
+push = ["util", "exec", "--", "uvx", "jj-pre-push@0.3.3", "push"]
