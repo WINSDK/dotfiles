@@ -1,0 +1,9 @@
+[user]
+	email = nicolas@careful.observer
+	name = Nicolas Mazzon
+[core]
+    editor = nvim
+[pull]
+	rebase = true
+[diff]
+	algorithm = patience

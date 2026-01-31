@@ -3,6 +3,7 @@ keybind = super+enter=new_tab
 keybind = super+backspace=new_tab
 keybind = super+t=unbind
 macos-titlebar-style = tabs
+shell-integration = fish
 
 theme = deep
 font-thicken = true

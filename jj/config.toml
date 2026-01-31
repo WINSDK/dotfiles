@@ -3,6 +3,7 @@
 [ui]
 editor = "nvim"
 diff-editor = ["nvim", "-c", "DiffEditor $left $right $output"]
+merge-editor = "diffconflicts"
 
 [user]
 name = "Nicolas Mazzon"
@@ -29,6 +30,14 @@ patterns = [
   "glob:'**/*.cu'",
   "glob:'**/*.cuh'",
 ]
+
+[merge-tools.diffconflicts]
+program = "nvim"
+merge-args = [
+    "-c", "let g:jj_diffconflicts_marker_length=$marker_length",
+    "-c", "JJDiffConflicts!", "$output", "$base", "$left", "$right",
+]
+merge-tool-edits-conflict-markers = true
 
 [aliases]
 push = ["util", "exec", "--", "uvx", "jj-pre-push@0.3.3", "push"]

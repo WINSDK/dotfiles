@@ -1,49 +1,12 @@
 bind \e accept-autosuggestion
 
-# How to setup git:
-#
-# cat <<EOF >> ~/.gitignore_global
-# .DS_Store
-# .DS_Store?
-# ._*
-# .Spotlight-V100
-# .Trashes
-# 
-# *.bak
-# *.swp
-# *.swo
-# *~
-# *#
-# 
-# .vscode
-# .idea
-# .iml
-# *.sublime-workspace
-# EOF
-#
-# opam install patdiff
-#
-# git config --global user.email "nicolasmazzon549@gmail.com"
-# git config --global user.name "Nicolas Mazzon"
-# 
-# git config --global core.editor "nvim"
-# git config --global core.excludesfile "~/.gitignore_global"
-# 
-# git config --global pull.rebase true
-# 
-# git config --global diff.algorithm "patience"
-# git config --global diff.external patdiff-git-wrapper
-
 abbr -a objdump "objdump -M intel -C"
 abbr -a cat "bat"
-abbr -a hexdump "hexdump -C"
 abbr -a tree "tree --gitignore"
 
-abbr -a l "exa -T -L 2"
-abbr -a ls "exa"
-abbr -a ll "exa -aghHl"
-abbr -a ubuntu "ssh admin@(tart ip ubuntu)"
-abbr -a ninja "/Applications/'Binary Ninja.app'/Contents/MacOS/binaryninja"
+abbr -a l "eza -T -L 2"
+abbr -a ls "eza"
+abbr -a ll "eza -aghHl"
 
 if command -q tree && command -q rg
     abbr -a tree "rg --files | tree --fromfile"
@@ -51,9 +14,9 @@ end
 
 switch (uname)
     case Darwin
-        set -U fish_user_paths /opt/homebrew/bin/ $fish_user_paths
         abbr -a make "make -j$(math $(sysctl -n hw.physicalcpu) + 1)"
         abbr -a jupyter "jupyter lab --app-dir /opt/homebrew/share/jupyter/lab"
+        abbr -a ninja "/Applications/'Binary Ninja.app'/Contents/MacOS/binaryninja"
 
         if command -q aria2c
             abbr -a aria2c "aria2c --enable-peer-exchange=true --enable-dht=true"
@@ -64,7 +27,6 @@ switch (uname)
 
         export TERM="xterm"
         export XCURSOR_THEME="Adwaita"
-        export KITTY_ENABLE_WAYLAND="1"
         export GPG_TTY=$(tty)
 
         # Fix ghidra gray screen on wayland
@@ -75,19 +37,13 @@ switch (uname)
         end
 end
 
-fish_add_path -P ~/.local/bin
-fish_add_path -P ~/.cargo/bin
-fish_add_path -P ~/Projects/utils
-
 if command -q nvim
     set EDITOR nvim
 else
     set EDITOR vim
 end
 
-set PYTHON_HOST_PROG "/usr/bin/python2"
 set PYTHON3_HOST_PROG "/usr/bin/python3"
-set LLVM_HOME "/usr/lib/llvm/llvm"
 
 # colored man output
 setenv LESS_TERMCAP_mb \e'[01;31m'       # begin blinking
@@ -98,10 +54,52 @@ setenv LESS_TERMCAP_so \e'[38;5;246m'    # begin standout-mode - info box
 setenv LESS_TERMCAP_ue \e'[0m'           # end underline
 setenv LESS_TERMCAP_us \e'[04;38;5;146m' # begin underline
 
+function modus-vivendi -d "Emacs modus contrast theme"
+    set -l foreground ffffff # fg-main
+    set -l comment a8a8a8 # fg-alt
+    set -l selection 34cfff # blue-active
+
+    # *-intense color
+    set -l red fe6060
+    set -l orange fba849
+    set -l green 4fe42f
+    set -l yellow f0dd60
+    set -l blue 4fafff
+    set -l magenta ff62d4
+    set -l purple 9f80ff
+    set -l cyan 3fdfd0
+
+    # Syntax Highlighting Colors
+    set -g fish_color_normal $foreground
+    set -g fish_color_command $purple
+    set -g fish_color_keyword $magenta
+    set -g fish_color_quote $blue
+    set -g fish_color_redirection $foreground
+    set -g fish_color_end $orange
+    set -g fish_color_error $red
+    set -g fish_color_param $cyan
+    set -g fish_color_comment $comment
+    set -g fish_color_selection --background=$selection
+    set -g fish_color_search_match --background=$selection
+    set -g fish_color_operator $green
+    set -g fish_color_escape $magenta
+    set -g fish_color_autosuggestion $comment
+
+    # Completion Pager Colors
+    set -g fish_pager_color_progress $comment
+    set -g fish_pager_color_prefix $cyan
+    set -g fish_pager_color_completion $foreground
+    set -g fish_pager_color_description $comment
+
+    # remember current theme
+    set -U base16_theme gruvbox-dark-medium
+
+    # clean up
+    functions -e put_template put_template_var put_template_custom
+end
+
 if status --is-interactive
-  if type -q modus-vivendi
-    modus-vivendi
-  end
+  modus-vivendi
 end
 
 function fish_prompt
@@ -112,11 +110,6 @@ function fish_prompt
   set_color 4fafff
   if [ $PWD != $HOME ]
     echo -n " "(prompt_pwd)
-  end
-
-  if [ $pipestatus != 0 ]
-    set_color -o brred
-    echo -n "[$pipestatus]"
   end
 
   set_color 4c82b0
