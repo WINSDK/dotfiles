@@ -1,20 +1,15 @@
 local set = vim.opt
 
-set.mouse = "a"
 set.relativenumber = true
 set.number = true
 set.spell = true
 
-set.synmaxcol = 500
 set.clipboard:append("unnamedplus")
 set.diffopt:append("iwhite")
 set.shortmess:append("c")
 
 set.laststatus = 3
 
-set.cmdheight = 1
-
-set.autoindent = true
 set.smartindent = true
 
 set.lazyredraw = true
@@ -41,7 +36,7 @@ vim.g.completion_matching_strategy_list = { "exact", "substring", "fuzzy" }
 vim.g.mapleader = " "
 
 vim.diagnostic.config({
-  virtual_text = {},
+  virtual_text = true,
   signs = true,
   severity_sort = true,
 })
@@ -59,31 +54,33 @@ vim.api.nvim_create_autocmd("Filetype", {
     local buf = vim.api.nvim_get_current_buf()
     local filetype = vim.api.nvim_buf_get_option(buf, "filetype")
     local sets = {
-      python = { width = "80", tab = 4 },
-      gitcommit = { width = "80", tab = 4 },
-      markdown = { width = "80", tab = 2 },
-      c = { width = "100", tab = 4 },
-      cpp = { width = "100", tab = 4 },
-      rust = { width = "100", tab = 4 },
-      lua = { width = "100", tab = 2 },
-      ocaml = { width = "100", tab = 2 },
-      reason = { width = "80", tab = 2 },
-      haskell = { width = "80", tab = 2 },
-      dune = { width = "100", tab = 1 },
-      css = { width = "80", tab = 2 },
-      html = { width = "80", tab = 2 },
-      cmake = { width = "80", tab = 2 },
+      python = { width = 80, tab = 4 },
+      gitcommit = { width = 80, tab = 4 },
+      markdown = { width = 80, tab = 2 },
+      c = { width = 100, tab = 4 },
+      cpp = { width = 100, tab = 4 },
+      rust = { width = 100, tab = 4 },
+      lua = { width = 100, tab = 2 },
+      ocaml = { width = 100, tab = 2 },
+      reason = { width = 80, tab = 2 },
+      haskell = { width = 80, tab = 2 },
+      dune = { width = 100, tab = 1 },
+      css = { width = 80, tab = 2 },
+      html = { width = 80, tab = 2 },
+      cmake = { width = 80, tab = 2 },
     }
 
     if sets[filetype] then
-      set.colorcolumn = sets[filetype].width
+      vim.colorcolumn = sets[filetype].width
 
+      vim.bo[buf].textwidth   = sets[filetype].width
       vim.bo[buf].tabstop     = sets[filetype].tab
       vim.bo[buf].shiftwidth  = sets[filetype].tab
       vim.bo[buf].softtabstop = sets[filetype].tab
     else
-      set.colorcolumn = "100"
+      vim.colorcolumn = 100
 
+      vim.bo[buf].textwidth   = 100
       vim.bo[buf].tabstop     = 4
       vim.bo[buf].shiftwidth  = 4
       vim.bo[buf].softtabstop = 4

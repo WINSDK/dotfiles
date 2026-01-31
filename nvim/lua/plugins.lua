@@ -49,10 +49,8 @@ function transform_lsp_items(a, items)
 end
 
 local plugins = {
-  "danielo515/nvim-treesitter-reason",
   {
     "nvim-treesitter/nvim-treesitter", -- Code highlighting.
-    dependencies = { "danielo515/nvim-treesitter-reason" },
     build = ":TSUpdate",
     config = function()
       local configs = require("nvim-treesitter.configs")
@@ -78,7 +76,6 @@ local plugins = {
           "rust",
           "ocaml",
           "haskell",
-          "reason",
         },
         sync_install = false,
         highlight = {
@@ -192,9 +189,6 @@ local plugins = {
                 },
                 loadOutDirsFromCheck = true
               },
-              checkOnSave = {
-                allTargets = false
-              },
               procMacro = {
                 enable = true
               },
@@ -208,19 +202,20 @@ local plugins = {
         clangd = {
           cmd = {
             "clangd",
+            "--clang-tidy=0",
             "--background-index",
-            "--clang-tidy",
-            "--compile-commands-dir=build"
+            "--pch-storage=memory",
+            "--compile-commands-dir=build",
+            "-j=8",
           },
           -- https://clangd.llvm.org/installation#neovim-built-in-lsp-client
           init_options = {
-            fallbackFlags = { "-std=c++23", "-fexperimental-library", "-stdlib=libc++" },
+            fallbackFlags = { "-std=c++2b", "-fexperimental-library", "-stdlib=libc++" },
           },
         },
         ruff = {},
         ty = {},
         ocamllsp = {},
-        hls = {},
       }
     },
     config = function(_, opts)
@@ -239,7 +234,7 @@ local plugins = {
       lsp_status.register_progress()
 
       function show_lsp_status()
-        if #vim.lsp.buf_get_clients() > 0 then
+        if #vim.lsp.get_clients() > 0 then
           return lsp_status.status()
         end
         return ""
@@ -309,9 +304,9 @@ local plugins = {
   "WINSDK/lsp-status.nvim", -- Status bar.
   "tpope/vim-fugitive", -- Mainly for :Gdiff.
   "tpope/vim-commentary", -- Comment stuff out.
-  "airblade/vim-gitgutter", -- git "+" and "-" on sidebar.
+  "airblade/vim-gitgutter", -- Git "+" and "-" on sidebar.
   {
-    "julienvincent/hunk.nvim",
+    "julienvincent/hunk.nvim", -- Tool for splitting diffs in jj-vcs.
     cmd = { "DiffEditor" },
     config = function()
       require("hunk").setup({
@@ -336,6 +331,7 @@ local plugins = {
     end,
     dependencies = { "MunifTanjim/nui.nvim" },
   },
+  "rafikdraoui/jj-diffconflicts", -- Merge conflict resolver for jj-vcs.
 }
 
 require("lazy").setup(plugins)
