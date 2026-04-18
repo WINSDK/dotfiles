@@ -52,44 +52,30 @@ local plugins = {
   {
     "nvim-treesitter/nvim-treesitter", -- Code highlighting.
     build = ":TSUpdate",
-    config = function()
-      local configs = require("nvim-treesitter.configs")
-
-      configs.setup({
-        ensure_installed = {
-          "markdown",
-          "glsl",
-          "wgsl",
-          "go",
-          "html",
-          "css",
-          "javascript",
-          "python",
-          "toml",
-          "json",
-          "lua",
-          "bash",
-          "comment",
-          "c",
-          "cpp",
-          "lua",
-          "rust",
-          "ocaml",
-          "haskell",
-        },
-        sync_install = false,
-        highlight = {
-          enable = true,
-          additional_vim_regex_highlighting = true,
-        },
-        autotag = {
-          enable = true
-        },
-        indent = {
-          enable = false
-        }
-      })
-    end
+    opts = {
+      ensure_installed = {
+        "markdown",
+        "glsl",
+        "wgsl",
+        "go",
+        "html",
+        "css",
+        "javascript",
+        "python",
+        "toml",
+        "json",
+        "lua",
+        "bash",
+        "comment",
+        "c",
+        "cpp",
+        "rust",
+        "ocaml",
+        "haskell",
+      },
+      highlight = { enable = true },
+      indent = { enable = false },
+    }
   },
   {
     "saghen/blink.cmp", -- LSP completion and documentation.

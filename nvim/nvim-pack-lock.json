@@ -1,0 +1,60 @@
+{
+  "plugins": {
+    "blink.cmp": {
+      "rev": "451168851e8e2466bc97ee3e026c3dcb9141ce07",
+      "src": "https://github.com/saghen/blink.cmp"
+    },
+    "fzf": {
+      "rev": "cc16a97a40a16efecbed5bd7fb322010c033e503",
+      "src": "https://github.com/junegunn/fzf"
+    },
+    "fzf.vim": {
+      "rev": "34a564c81f36047f50e593c1656f4580ff75ccca",
+      "src": "https://github.com/junegunn/fzf.vim"
+    },
+    "hunk.nvim": {
+      "rev": "a73c34934e87af4f2e615fea3a57ee28b2dceec8",
+      "src": "https://github.com/julienvincent/hunk.nvim"
+    },
+    "jj-diffconflicts": {
+      "rev": "58163ae8fe7646179dfd7741206dd9a2b4cdadc0",
+      "src": "https://github.com/rafikdraoui/jj-diffconflicts"
+    },
+    "lsp-status.nvim": {
+      "rev": "f3739084bc12a9f0f0fa172b91b750e963da8f6a",
+      "src": "https://github.com/WINSDK/lsp-status.nvim"
+    },
+    "modus-themes.nvim": {
+      "rev": "25b668fe981348080acbaa67cecaac6750d8b0b8",
+      "src": "https://github.com/WINSDK/modus-themes.nvim"
+    },
+    "nui.nvim": {
+      "rev": "de740991c12411b663994b2860f1a4fd0937c130",
+      "src": "https://github.com/MunifTanjim/nui.nvim"
+    },
+    "nvim-autopairs": {
+      "rev": "59bce2eef357189c3305e25bc6dd2d138c1683f5",
+      "src": "https://github.com/windwp/nvim-autopairs"
+    },
+    "nvim-lspconfig": {
+      "rev": "8e2084bf5e40c79c1f42210a6ef96a0a4793a763",
+      "src": "https://github.com/neovim/nvim-lspconfig"
+    },
+    "nvim-treesitter": {
+      "rev": "c82bf96f0a773d85304feeb695e1e23b2207ac35",
+      "src": "https://github.com/nvim-treesitter/nvim-treesitter"
+    },
+    "vim-commentary": {
+      "rev": "64a654ef4a20db1727938338310209b6a63f60c9",
+      "src": "https://github.com/tpope/vim-commentary"
+    },
+    "vim-fugitive": {
+      "rev": "3b753cf8c6a4dcde6edee8827d464ba9b8c4a6f0",
+      "src": "https://github.com/tpope/vim-fugitive"
+    },
+    "vim-gitgutter": {
+      "rev": "55b368d4c68541775b4b253d3c98d3145b695c24",
+      "src": "https://github.com/airblade/vim-gitgutter"
+    }
+  }
+}
