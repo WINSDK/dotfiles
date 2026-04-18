@@ -100,6 +100,9 @@ end
 
 if status --is-interactive
   modus-vivendi
+  if command -q direnv
+    direnv hook fish | source
+  end
 end
 
 function fish_prompt

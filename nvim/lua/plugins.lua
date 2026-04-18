@@ -215,6 +215,7 @@ local plugins = {
         ruff = {},
         ty = {},
         ocamllsp = {},
+        nixd = {},
       }
     },
     config = function(_, opts)
