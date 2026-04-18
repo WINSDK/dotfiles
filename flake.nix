@@ -1,5 +1,7 @@
 # mac:   sudo darwin-rebuild switch --flake .#macbook
 # linux: sudo nixos-rebuild switch --flake .#germany01
+#
+# make sure dotfiles are at: $HOME/dots
 
 {
   description = "System configurations";

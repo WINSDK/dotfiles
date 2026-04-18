@@ -108,7 +108,10 @@ end
 function fish_prompt
   set_color -o brwhite
   echo -n $USER
-  set_color f0dd60
+  set -l prompt_colors ff6b6b ffa07a f0dd60 4fe42f 3fdfd0 c792ea ff62d4 ffb86c c3e88d e2b93d 26a69a ef5350
+  set -l hash (string sub -l 4 (echo -n (hostname) | md5sum))
+  set -l idx (math "1 + (0x$hash % 12)")
+  set_color $prompt_colors[$idx]
   echo -n " ::"
   set_color 4fafff
   if [ $PWD != $HOME ]
