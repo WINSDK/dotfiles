@@ -74,14 +74,12 @@ vim.api.nvim_create_autocmd("Filetype", {
     if sets[filetype] then
       vim.colorcolumn = sets[filetype].width
 
-      vim.bo[buf].textwidth   = sets[filetype].width
       vim.bo[buf].tabstop     = sets[filetype].tab
       vim.bo[buf].shiftwidth  = sets[filetype].tab
       vim.bo[buf].softtabstop = sets[filetype].tab
     else
       vim.colorcolumn = 100
 
-      vim.bo[buf].textwidth   = 100
       vim.bo[buf].tabstop     = 4
       vim.bo[buf].shiftwidth  = 4
       vim.bo[buf].softtabstop = 4
