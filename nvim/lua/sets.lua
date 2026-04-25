@@ -86,3 +86,11 @@ vim.api.nvim_create_autocmd("Filetype", {
     end
   end,
 })
+
+-- Set bold border only on hover.
+local orig_util_open_floating_preview = vim.lsp.util.open_floating_preview
+function vim.lsp.util.open_floating_preview(contents, syntax, opts, ...)
+  opts = opts or {}
+  opts.border = "bold"
+  return orig_util_open_floating_preview(contents, syntax, opts, ...)
+end

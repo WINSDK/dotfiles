@@ -13,29 +13,6 @@ end
 
 vim.opt.rtp:prepend(lazypath)
 
--- Recursively walk tree to check if we're in a node that *doesn't* require autocomplete.
-local function autocomplete_required()
-  local excluded_types = {
-    "string",
-    "string_content",
-    "quoted_string_content",
-    "comment",
-    "line_comment",
-    "block_comment",
-  }
-
-  local node = require("nvim-treesitter.ts_utils").get_node_at_cursor(0, true)
-  if not node then return false end
-  while node do
-    local ntype = node:type()
-    if vim.tbl_contains(excluded_types, ntype) then
-      return false
-    end
-    node = node:parent()
-  end
-  return true
-end
-
 function transform_lsp_items(a, items)
   local kinds = require("blink.cmp.types").CompletionItemKind
   local keyword = a.get_keyword()
@@ -143,19 +120,6 @@ local plugins = {
         providers = {
           lsp = {
             transform_items = transform_lsp_items,
-            should_show_items = function(ctx)
-              -- More hacks to not show autocompletion on common keywords.
-              -- Don't know why this doesn't already exist in blink.cmp
-              -- local filter = { "while", "then", "if", "let", "type", "in", "with" }
-              -- if vim.tbl_contains(filter, ctx.get_keyword()) then
-              --   return false
-              -- end 
-
-              -- Truly awful hack that disables autocompletion when treesitter
-              -- realizes we're in a comment or string. For some reason ocaml and a couple
-              -- other languages will autocomplete even when it makes no sense. 
-              return autocomplete_required()
-            end,
           }
         }
       },
@@ -317,6 +281,20 @@ local plugins = {
     end,
     dependencies = { "MunifTanjim/nui.nvim" },
   },
+  {
+    "stevearc/conform.nvim",
+    opts = {
+      formatters_by_ft = {
+        python = { "ruff_format" },
+        ocaml = { "ocamlformat" },
+        rust = { "rustfmt" },
+        nix = { "nixfmt" },
+        c = { "clang_format" },
+        cpp = { "clang_format" },
+      },
+
+    },
+  }, -- better formatting
   "rafikdraoui/jj-diffconflicts", -- Merge conflict resolver for jj-vcs.
 }
 

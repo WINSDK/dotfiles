@@ -3,35 +3,6 @@ local ops = { noremap = true, silent = true }
 local function nnoremap(key, com) vim.keymap.set("n", key, com, ops) end
 local function inoremap(key, com) vim.keymap.set("i", key, com, ops) end
 
-vim.api.nvim_create_user_command("Make", function(opts)
-  local cmd = opts.args ~= "" and ("make " .. opts.args) or "make"
-  vim.cmd("botright split | resize 15 | terminal " .. cmd)
-  vim.cmd("startinsert")
-end, { nargs = "*", complete = "shellcmd" })
-
-vim.api.nvim_create_user_command(
-  "Format",
-  function(...)
-    local buf = vim.api.nvim_get_current_buf()
-    local filetype = vim.api.nvim_buf_get_option(buf, "filetype")
-
-    if filetype == "ocaml" then
-      if vim.fn.executable("dune") == 1 then
-        vim.cmd("!dune fmt > /dev/null 2>&1")
-      end
-    else
-      vim.lsp.buf.format({ async = true })
-    end
-  end,
-  {}
-)
-
-vim.api.nvim_create_user_command(
-  "Code",
-  function (...) vim.lsp.buf.code_action() end,
-  {}
-)
-
 -- Treat :W as :w command.
 vim.api.nvim_create_user_command("W", "w", { nargs = "*" })
 
@@ -78,20 +49,17 @@ nnoremap("<Leader>n", function()
 end)
 nnoremap("<Leader>b", "<Cmd>Buffers<CR>")
 nnoremap("<Leader>c", "<Cmd>Rg<CR>")
-nnoremap("<Leader>f", vim.lsp.buf.format)
 nnoremap("<Leader>r", vim.lsp.buf.rename)
+nnoremap(
+  "<Leader>f",
+  function()
+    require("conform").format({ async = true, lsp_fallback = true })
+  end
+)
 
 -- Best keymaps in vim.
 nnoremap("<Tab>", "<Cmd>Files<CR>")
 inoremap("jj", "<Esc>")
-
--- Set bold border only on hover.
-local orig_util_open_floating_preview = vim.lsp.util.open_floating_preview
-function vim.lsp.util.open_floating_preview(contents, syntax, opts, ...)
-  opts = opts or {}
-  opts.border = "bold"
-  return orig_util_open_floating_preview(contents, syntax, opts, ...)
-end
 
 vim.api.nvim_create_autocmd("LspAttach", {
   group = vim.api.nvim_create_augroup("UserLspConfig", {}),

@@ -6,4 +6,5 @@ vim.lsp.log.set_level(vim.lsp.log.levels.ERROR)
 
 require('plugins')
 require('sets')
-require('mappings')
+require('keymaps')
+require('functions')

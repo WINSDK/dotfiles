@@ -18,7 +18,9 @@
     fzf
     btop
     claude-code
-    direnv
+    (direnv.overrideAttrs (old: {
+      doCheck = false;
+    }))
     nix-direnv
     nixd
     nixfmt
@@ -38,7 +40,7 @@
       home.stateVersion = "25.05";
 
       xdg.configFile = {
-        "ghostty".source = mkOutOfStoreSymlink "${dotfiles}/dots/ghostty";
+        "ghostty".source = mkOutOfStoreSymlink "${dotfiles}/ghostty";
         "fish".source = mkOutOfStoreSymlink "${dotfiles}/fish";
         "nvim".source = mkOutOfStoreSymlink "${dotfiles}/nvim";
         "jj".source = mkOutOfStoreSymlink "${dotfiles}/jj";
