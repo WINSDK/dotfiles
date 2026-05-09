@@ -5,7 +5,7 @@ vim.loader.enable()
 vim.lsp.log.set_level(vim.lsp.log.levels.ERROR)
 
 require('plugins')
-require('conway')
+-- require('conway')
 require('sets')
 require('keymaps')
 require('functions')

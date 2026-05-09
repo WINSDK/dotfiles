@@ -18,6 +18,7 @@
     fzf
     btop
     claude-code
+    python3
     (direnv.overrideAttrs (old: {
       doCheck = false;
     }))

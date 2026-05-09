@@ -25,6 +25,14 @@ function transform_lsp_items(a, items)
   )
 end
 
+local function uv_first(bin, args)
+  local cmd = vim.fn.executable("uv") == 1
+      and { "uv", "run", "--with", bin, bin }
+      or { bin }
+  vim.list_extend(cmd, args or {})
+  return cmd
+end
+
 local plugins = {
   {
     "nvim-treesitter/nvim-treesitter", -- Code highlighting.
@@ -162,8 +170,12 @@ local plugins = {
             fallbackFlags = { "-std=c++2b", "-fexperimental-library", "-stdlib=libc++" },
           },
         },
-        ruff = {},
-        ty = {},
+        ruff = {
+          cmd = uv_first("ruff", { "server" })
+        },
+        ty = {
+          cmd = uv_first("ty", { "server" })
+        },
         ocamllsp = {},
         nixd = {},
       }
