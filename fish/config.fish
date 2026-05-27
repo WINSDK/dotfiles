@@ -14,21 +14,15 @@ end
 
 switch (uname)
     case Darwin
-        abbr -a make "make -j$(math $(sysctl -n hw.physicalcpu) + 1)"
-        abbr -a jupyter "jupyter lab --app-dir /opt/homebrew/share/jupyter/lab"
-        abbr -a ninja "/Applications/'Binary Ninja.app'/Contents/MacOS/binaryninja"
+        set -gx MAKEFLAGS "-j"(math (sysctl -n hw.physicalcpu) + 1)
 
         if command -q aria2c
             abbr -a aria2c "aria2c --enable-peer-exchange=true --enable-dht=true"
         end
     case Linux
-        abbr -a make "make -j$(math $(nproc) + 1)"
-        abbr -a jupyter "jupyter lab"
+        set -gx MAKEFLAGS "-j"(math (nproc) + 1)
 
-        export TERM="xterm"
-        export XCURSOR_THEME="Adwaita"
         export GPG_TTY=$(tty)
-
         # Fix ghidra gray screen on wayland
         export _JAVA_AWT_WM_NONREPARENTING="1"
 
@@ -36,23 +30,6 @@ switch (uname)
             abbr -a aria2c "aria2c --async-dns=false --enable-peer-exchange=true --enable-dht=true"
         end
 end
-
-if command -q nvim
-    set EDITOR nvim
-else
-    set EDITOR vim
-end
-
-set PYTHON3_HOST_PROG "/usr/bin/python3"
-
-# colored man output
-setenv LESS_TERMCAP_mb \e'[01;31m'       # begin blinking
-setenv LESS_TERMCAP_md \e'[01;38;5;74m'  # begin bold
-setenv LESS_TERMCAP_me \e'[0m'           # end mode
-setenv LESS_TERMCAP_se \e'[0m'           # end standout-mode
-setenv LESS_TERMCAP_so \e'[38;5;246m'    # begin standout-mode - info box
-setenv LESS_TERMCAP_ue \e'[0m'           # end underline
-setenv LESS_TERMCAP_us \e'[04;38;5;146m' # begin underline
 
 function modus-vivendi -d "Emacs modus contrast theme"
     set -l foreground ffffff # fg-main
@@ -122,6 +99,5 @@ function fish_prompt
   echo -en " » \e[2 q"
 end
 
-function fish_greeting 
-  # I don't need a greeting evertime thx.
-end
+# I don't need a greeting evertime thx.
+set fish_greeting

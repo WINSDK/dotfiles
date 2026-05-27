@@ -40,9 +40,6 @@ local plugins = {
     opts = {
       ensure_installed = {
         "markdown",
-        "glsl",
-        "wgsl",
-        "go",
         "html",
         "css",
         "javascript",
@@ -56,7 +53,7 @@ local plugins = {
         "cpp",
         "rust",
         "ocaml",
-        "haskell",
+        "nix",
       },
       highlight = { enable = true },
       indent = { enable = false },
@@ -162,12 +159,14 @@ local plugins = {
             "clangd",
             "--background-index",
             "--pch-storage=memory",
-            "--compile-commands-dir=build",
+            -- compile_commands.json records the nix-wrapped clang++. Workaround
+            "--query-driver=**/clang++,**/clang,**/cc,**/c++",
+            -- "--compile-commands-dir=build",
             "-j=8",
           },
           -- https://clangd.llvm.org/installation#neovim-built-in-lsp-client
           init_options = {
-            fallbackFlags = { "-std=c++2b", "-fexperimental-library", "-stdlib=libc++" },
+            fallbackFlags = { "-std=c++2b", "-fexperimental-library" },
           },
         },
         ruff = {
@@ -303,8 +302,8 @@ local plugins = {
         nix = { "nixfmt" },
         c = { "clang_format" },
         cpp = { "clang_format" },
+        markdown = { "mdformat" },
       },
-
     },
   }, -- better formatting
   "rafikdraoui/jj-diffconflicts", -- Merge conflict resolver for jj-vcs.

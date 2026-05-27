@@ -6,6 +6,7 @@
 {
   users.users.nicolas.packages = with pkgs; [
     mpv
+    jdk21
   ];
 
   system.configurationRevision = self.rev or self.dirtyRev or null;

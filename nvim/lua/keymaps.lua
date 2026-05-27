@@ -45,7 +45,7 @@ nnoremap("<Leader>n", function()
     end
   end
 
-  vim.cmd("ClangdSwitchSourceHeader")
+  vim.cmd("LspClangdSwitchSourceHeader")
 end)
 nnoremap("<Leader>b", "<Cmd>Buffers<CR>")
 nnoremap("<Leader>c", "<Cmd>Rg<CR>")
