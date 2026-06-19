@@ -1,0 +1,8 @@
+Vendored mdformat sources. Upstream SHAs at time of vendoring:
+
+mdformat             56b24ef0c6cfdab501844925971204f858185547  https://github.com/hukkin/mdformat
+mdformat-gfm         3b6068f7b1f500f57e7afd64b8265ed9cd2116f4  https://github.com/hukkin/mdformat-gfm
+mdformat-frontmatter 7b4b2b9424a81b996961d7ef17af2ede63ec5066  https://github.com/butler54/mdformat-frontmatter
+mdformat-footnote    2deb082790cd1d7c0f5caa7efdc2b21444f3c365  https://github.com/executablebooks/mdformat-footnote
+
+To refresh: re-clone upstream, copy contents over, update this file, rm -rf .git.

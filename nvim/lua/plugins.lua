@@ -294,7 +294,24 @@ local plugins = {
   },
   {
     "stevearc/conform.nvim",
+    build = function()
+      local venv = vim.fn.stdpath("data") .. "/mdformat-venv"
+      local py = venv .. "/bin/python"
+      local vendor = vim.fn.stdpath("config") .. "/vendor"
+      if vim.fn.executable(py) == 0 then
+        vim.fn.system({ "python3", "-m", "venv", venv })
+      end
+      vim.fn.system({
+        py, "-m", "pip", "install", "-e", vendor .. "/mdformat",
+        "-e", vendor .. "/mdformat-gfm",
+        "-e", vendor .. "/mdformat-frontmatter",
+        "-e", vendor .. "/mdformat-footnote",
+      })
+    end,
     opts = {
+      formatters = {
+        mdformat = { command = vim.fn.stdpath("data") .. "/mdformat-venv/bin/mdformat" },
+      },
       formatters_by_ft = {
         python = { "ruff_format" },
         ocaml = { "ocamlformat" },

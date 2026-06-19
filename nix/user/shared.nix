@@ -3,7 +3,6 @@
   users.users.nicolas.packages = with pkgs; [
     neovim
     tree-sitter
-    (mdformat.withPlugins (ps: with ps; [ mdformat-gfm ]))
     gh
     fish
     eza

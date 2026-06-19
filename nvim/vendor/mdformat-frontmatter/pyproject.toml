@@ -1,0 +1,88 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "mdformat_frontmatter"
+description = "An mdformat plugin for parsing / ignoring frontmatter."
+authors = [{name = "Chris Butler", email = "chris@thebutlers.me"}]
+readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
+classifiers = [
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+keywords = [
+    "mdformat",
+    "markdown",
+    "markdown-it"
+]
+dynamic = ["version"]
+
+requires-python = ">=3.10"
+dependencies = [
+    "mdformat >=0.7.16",
+    "mdit-py-plugins >=0.4.0",
+    "ruamel.yaml>=0.15"
+]
+[project.urls]
+Source = "https://github.com/butler54/mdformat-frontmatter"
+Changelog = "https://github.com/butler54/mdformat-frontmatter/blob/main/CHANGELOG.md"
+[project.optional-dependencies]
+test = [
+    "pytest>=7.3",
+    "coverage",
+    "pytest-cov"
+]
+dev = [
+    "pre-commit",
+    "python-semantic-release>=10.4.0"
+]
+
+[project.entry-points."mdformat.parser_extension"]
+frontmatter = "mdformat_frontmatter"
+
+[tool.hatch.version]
+path = "mdformat_frontmatter/__init__.py"
+
+[tool.hatch.build.targets.sdist]
+exclude = [".github/", "tests/"]
+
+[tool.ruff]
+line-length = 88
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "W", "F", "I", "UP", "B", "C4"]
+ignore = ["E501"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["mdformat_frontmatter", "tests"]
+
+[tool.semantic_release]
+build_command = """
+    python -m pip install build --upgrade
+    python -m build
+"""
+version_variables = ["mdformat_frontmatter/__init__.py:__version__"]
+commit_author = "semantic-release <semantic-release>"
+
+[tool.semantic_release.commit_parser_options]
+allowed_tags = ["build", "chore", "ci", "docs", "feat", "fix", "perf", "style", "refactor", "test"]
+minor_tags = ["feat"]
+patch_tags = ["fix", "perf"]
+default_bump_level = 0
+
+[tool.semantic_release.branches.main]
+match = "(main)"
+prerelease = false
+
+[tool.semantic_release.publish]
+dist_glob_patterns = ["dist/*"]

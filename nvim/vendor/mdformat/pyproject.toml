@@ -1,0 +1,187 @@
+[build-system]
+requires = ["setuptools>=77.0.3"]
+build-backend = "setuptools.build_meta"
+
+
+[project]
+name = "mdformat"
+version = "1.0.0"  # DO NOT EDIT THIS LINE MANUALLY. LET bump2version UTILITY DO IT
+description = "CommonMark compliant Markdown formatter"
+authors = [
+    { name = "Taneli Hukkinen", email = "hukkin@users.noreply.github.com" },
+]
+license = "MIT"
+license-files = ["LICENSE"]
+requires-python = ">=3.10"
+dependencies = [
+    'markdown-it-py>=1,<5',
+    'tomli >=1.1.0; python_version < "3.11"',
+]
+readme = "README.md"
+classifiers = [
+    "Environment :: Console",
+    "Operating System :: MacOS",
+    "Operating System :: Microsoft :: Windows",
+    "Operating System :: POSIX :: Linux",
+    "Topic :: Documentation",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Text Processing :: Markup",
+    "Typing :: Typed",
+]
+keywords = ["mdformat", "markdown", "commonmark", "formatter", "pre-commit"]
+
+[project.urls]
+"Homepage" = "https://github.com/hukkin/mdformat"
+"Documentation" = "https://mdformat.readthedocs.io"
+"Style guide" = "https://mdformat.readthedocs.io/en/stable/users/style.html"
+"Changelog" = "https://mdformat.readthedocs.io/en/stable/users/changelog.html"
+
+[project.scripts]
+mdformat = "mdformat.__main__:run"
+
+
+[tool.isort]
+# Force imports to be sorted by module, independent of import type
+force_sort_within_sections = true
+# Group first party and local folder imports together
+no_lines_before = ["LOCALFOLDER"]
+
+# Configure isort to work without access to site-packages
+known_first_party = ["mdformat", "tests"]
+
+# Settings for Black compatibility
+profile = "black"
+
+
+[tool.pytest.ini_options]
+addopts = "--strict-markers --strict-config"
+xfail_strict = true
+
+
+[tool.tox]
+requires = ["tox>=4.21.1"]
+# Only run pytest envs when no args given to tox
+env_list = ["3.10", "3.11", "3.12", "3.13"]
+
+[tool.tox.env_run_base]
+description = "run tests under {base_python}"
+deps = [
+    "-r tests/requirements.txt",
+]
+commands = [
+    ["pytest", { replace = "posargs", default = ["--cov"], extend = true }],
+]
+
+[tool.tox.env."profile"]
+description = "run profiler (use e.g. `firefox .tox/prof/combined.svg` to open)"
+deps = [
+    "-r tests/requirements.txt",
+    "pytest-profiling",
+]
+commands = [
+    ["pytest", "tests/test_for_profiler.py", "--profile-svg", "--pstats-dir", "{toxworkdir}/prof"],
+    ["python", "-c", 'import pathlib; print("profiler svg output under file://\{0\}".format(pathlib.Path(r"{toxworkdir}") / "prof" / "combined.svg"))'],
+]
+
+[tool.tox.env."pre-commit"]
+description = "run linters (except mypy)"
+skip_install = true
+deps = ["pre-commit"]
+commands = [
+    ["pre-commit", "run", { replace = "posargs", default = ["--all-files"], extend = true }],
+]
+
+[tool.tox.env."mypy"]
+description = "run mypy"
+basepython = ["python3.13"]
+deps = [
+    "-r tests/requirements.txt",
+    "mypy==1.17.1",
+]
+commands = [
+    ["mypy", { replace = "posargs", default = ["src/", "tests/"], extend = true }],
+]
+
+[tool.tox.env."hook"]
+description = "test mdformat's own pre-commit hook against the README file"
+skip_install = true
+deps = ["pre-commit"]
+commands = [
+    ["pre-commit", "try-repo", ".", "mdformat", "--files", "README.md"],
+]
+
+[tool.tox.env."cli"]
+description = "run mdformat's own CLI"
+deps = []
+commands = [
+    ["mdformat", { replace = "posargs", extend = true }],
+]
+
+[tool.tox.env."docs"]
+description = "invoke sphinx-build to build the HTML docs"
+skip_install = true
+deps = [
+    "-r docs/requirements.txt",
+]
+commands = [
+    ["sphinx-build", "-d", "{toxworkdir}/docs_doctree", "docs/", "{toxworkdir}/docs_out", "-W", "-b", "html", { replace = "posargs", extend = true }],
+    ["python", "-c", 'import pathlib; print("documentation available under file://\{0\}".format(pathlib.Path(r"{toxworkdir}") / "docs_out" / "index.html"))'],
+]
+
+[tool.tox.env."fuzz"]
+description = 'run the fuzzer (needs "apt install clang")'
+deps = [
+    "-r fuzzer/requirements.txt",
+]
+allowlist_externals = [
+    "mkdir",
+    "cp",
+]
+commands = [
+    # Create a folder for persistent corpus and use README.md as initial seed
+    ["mkdir", "-p", "{toxworkdir}/fuzzer-corpus"],
+    ["cp", "-n", "README.md", "{toxworkdir}/fuzzer-corpus/README.md"],
+    # Run fuzzer
+    ["python", "fuzzer/fuzz.py", "{toxworkdir}/fuzzer-corpus", { replace = "posargs", default = ["-len_control=10000"], extend = true }],
+]
+
+[tool.tox.env."benchmark"]
+description = "benchmark mdformat against local doc files"
+deps = []
+commands = [
+    ["python", "-c", "print('Wrap mode: keep')"],
+    ["python", "-m", "timeit", "from mdformat._cli import run", 'run(["README.md", "docs/", "--check"])'],
+    ["python", "-c", "print('Wrap mode: 50')"],
+    ["python", "-m", "timeit", "from mdformat._cli import run", 'run(["README.md", "docs/", "--check", "--wrap", "50"])'],
+]
+
+[tool.tox.env."benchmark-import"]
+description = "Measure module import times. Tox sends mdformat output to stderr, so to filter use e.g. `tox -e benchmark-import 2> >(grep mdformat)`."
+deps = []
+commands = [
+    ["python", "-X", "importtime", "-m", "mdformat", "--version"],
+]
+
+
+[tool.coverage.run]
+source = ["mdformat"]
+plugins = ["covdefaults"]
+
+
+[tool.mypy]
+show_error_codes = true
+warn_unreachable = true
+warn_unused_ignores = true
+warn_redundant_casts = true
+warn_unused_configs = true
+# Disabling incremental mode is required for `warn_unused_configs = true` to work
+incremental = false
+disallow_untyped_defs = true
+check_untyped_defs = true
+strict_equality = true
+implicit_reexport = false
+no_implicit_optional = true
+
+[[tool.mypy.overrides]]
+module = "tests.*"
+disallow_untyped_defs = false
